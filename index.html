@@ -473,6 +473,368 @@
       .hero-stats{gap:var(--s6);}
       .nav-cards{grid-template-columns:repeat(2,1fr);}
     }
+
+    /* ══════════════════════════════════════════════════════════════
+       HOME v2 UPDATE — two-column layout + live feeds sidebar
+    ══════════════════════════════════════════════════════════════ */
+
+    /* Override hero to not be full-screen — compact top section */
+    .hero {
+      min-height: unset !important;
+      padding: var(--s12) var(--s8) var(--s8) !important;
+      text-align: left !important;
+      align-items: flex-start !important;
+    }
+    .hero-badge { margin: 0 !important; }
+    .hero-h { text-align: left !important; font-size: clamp(2rem, 4vw, 3.2rem) !important; }
+    .hero-sub { text-align: left !important; }
+    .hero-ctas { justify-content: flex-start !important; }
+
+    /* Two-column home layout */
+    .home-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: var(--s8);
+      align-items: start;
+      padding: var(--s8) 0 var(--s16);
+    }
+    .home-left {}
+    .home-right {
+      position: sticky;
+      top: calc(56px + var(--s4));
+    }
+
+    /* Portal description pills */
+    .portal-desc-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: var(--s6);
+      margin-bottom: var(--s6);
+    }
+    .portal-desc-block p {
+      font-size: var(--sm);
+      color: var(--text-muted);
+      line-height: 1.75;
+      margin: 0 0 var(--s5);
+    }
+    .portal-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s3);
+    }
+    .portal-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--s3);
+      font-size: var(--xs);
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .portal-feature-icon {
+      width: 28px; height: 28px;
+      border-radius: var(--r-sm);
+      display: flex; align-items: center;
+      justify-content: center;
+      font-size: .85rem; flex-shrink: 0;
+    }
+    .portal-feature strong { display: block; color: var(--text); font-size: var(--xs); margin-bottom: 1px; }
+
+    /* ── FEEDS SIDEBAR ── */
+    .feeds-sidebar {
+      display: flex; flex-direction: column; gap: var(--s4);
+    }
+    .feeds-widget {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      overflow: hidden;
+    }
+    .feeds-widget-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--s4) var(--s5);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-soft);
+    }
+    .feeds-widget-title {
+      font-size: var(--sm); font-weight: 800;
+      display: flex; align-items: center; gap: var(--s2);
+    }
+    .feeds-live-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green); flex-shrink: 0;
+      animation: pulse-live 2s infinite;
+    }
+    @keyframes pulse-live {
+      0%,100% { opacity:.4; transform:scale(1); }
+      50%      { opacity:1;  transform:scale(1.3); }
+    }
+    .feeds-refresh-btn {
+      font-size: var(--xs); font-family: var(--font-code);
+      background: none; border: none; color: var(--text-faint);
+      cursor: pointer; padding: 2px 6px;
+      border-radius: var(--r-sm); transition: var(--tf);
+    }
+    .feeds-refresh-btn:hover { color: var(--accent); background: var(--accent-dim); }
+    .feeds-refresh-btn.spin span { display: inline-block; animation: spin-r .7s linear infinite; }
+    @keyframes spin-r { to { transform: rotate(360deg); } }
+
+    /* Source filter pills */
+    .feeds-source-tabs {
+      display: flex; gap: var(--s1);
+      padding: var(--s3) var(--s5);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+    .feeds-source-tabs::-webkit-scrollbar { display: none; }
+    .fst-btn {
+      font-family: var(--font-code); font-size: .65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .07em;
+      padding: 3px 10px; border-radius: var(--r-full);
+      background: none; border: 1px solid var(--border);
+      color: var(--text-faint); cursor: pointer; transition: var(--tf);
+      white-space: nowrap;
+    }
+    .fst-btn:hover { color: var(--text); border-color: var(--border-light); }
+    .fst-btn.active { background: var(--accent-dim); border-color: rgba(255,54,33,.35); color: var(--accent); }
+
+    /* Individual feed items */
+    .feeds-list {
+      max-height: 520px; overflow-y: auto;
+    }
+    .feeds-list::-webkit-scrollbar { width: 4px; }
+    .feeds-list::-webkit-scrollbar-track { background: transparent; }
+    .feeds-list::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    .feed-item {
+      display: block; padding: var(--s4) var(--s5);
+      border-bottom: 1px solid var(--border);
+      text-decoration: none; color: inherit;
+      transition: background .15s;
+      cursor: pointer;
+    }
+    .feed-item:last-child { border-bottom: none; }
+    .feed-item:hover { background: var(--bg-soft); }
+
+    .feed-item-meta {
+      display: flex; align-items: center; gap: var(--s2);
+      margin-bottom: var(--s2); flex-wrap: wrap;
+    }
+    .feed-source-chip {
+      font-family: var(--font-code); font-size: .6rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .08em;
+      padding: 1px 7px; border-radius: var(--r-full);
+    }
+    .chip-devto    { background: rgba(0,188,212,.12);  color: var(--cyan);   border: 1px solid rgba(0,188,212,.25); }
+    .chip-hn       { background: rgba(255,102,0,.12);  color: #ff6200;       border: 1px solid rgba(255,102,0,.25); }
+    .chip-github   { background: rgba(156,111,255,.12);color: var(--purple); border: 1px solid rgba(156,111,255,.25); }
+    .chip-reddit   { background: rgba(255,54,33,.12);  color: var(--accent); border: 1px solid rgba(255,54,33,.25); }
+    .chip-community{ background: rgba(0,200,83,.12);   color: var(--green);  border: 1px solid rgba(0,200,83,.25); }
+    .chip-blog     { background: rgba(255,179,0,.12);  color: var(--amber);  border: 1px solid rgba(255,179,0,.25); }
+
+    .feed-item-time {
+      font-family: var(--font-code); font-size: .6rem;
+      color: var(--text-faint); margin-left: auto;
+    }
+    .feed-item-title {
+      font-size: var(--xs); font-weight: 700;
+      line-height: 1.4; margin-bottom: var(--s1);
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .feed-item-stats {
+      display: flex; gap: var(--s3);
+      font-family: var(--font-code); font-size: .6rem; color: var(--text-faint);
+    }
+
+    /* Skeleton loading */
+    .feed-skeleton-item { padding: var(--s4) var(--s5); border-bottom: 1px solid var(--border); }
+    .feed-sk { height: 10px; background: var(--border); border-radius: 4px; margin-bottom: var(--s2); animation: sk-shine 1.4s infinite; }
+    @keyframes sk-shine { 0%,100%{opacity:.4} 50%{opacity:.8} }
+
+    /* Error / empty states */
+    .feeds-empty {
+      padding: var(--s8) var(--s5); text-align: center;
+      color: var(--text-faint); font-size: var(--xs);
+    }
+    .feeds-empty-icon { font-size: 1.6rem; margin-bottom: var(--s3); opacity: .4; }
+
+    /* Footer link inside widget */
+    .feeds-footer {
+      padding: var(--s3) var(--s5);
+      border-top: 1px solid var(--border);
+      background: var(--bg-soft);
+      font-family: var(--font-code); font-size: .65rem;
+      color: var(--text-faint); text-align: center;
+    }
+
+    @media (max-width: 960px) {
+      .home-layout { grid-template-columns: 1fr; }
+      .home-right  { position: static; }
+      .feeds-list  { max-height: 360px; }
+      .hero        { padding: var(--s8) var(--s4) var(--s6) !important; }
+    }
+    @media (max-width: 600px) {
+      .portal-features { grid-template-columns: 1fr; }
+    }
+
+
+    /* ══════════════════════════════════════════════════════════════
+       WHAT'S NEW WIDGET
+    ══════════════════════════════════════════════════════════════ */
+    /* ══════════════════════════════════════════════════════════════
+       HERO SPLIT — two columns: hub title LEFT, What's New RIGHT
+    ══════════════════════════════════════════════════════════════ */
+    .hero-split {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 0;
+      align-items: stretch;
+      min-height: calc(100vh - var(--navbar-h));
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--s8);
+    }
+    .hero-split-left {
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: var(--s12) var(--s8) var(--s12) 0;
+      border-right: 1px solid var(--border);
+    }
+    .hero-split-right {
+      display: flex; flex-direction: column;
+      padding: var(--s6) 0 var(--s6) var(--s6);
+      overflow: hidden;
+    }
+
+    /* What's New panel (vertical, sits in hero-split-right) */
+    .wn-panel {
+      display: flex; flex-direction: column;
+      height: 100%; min-height: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      overflow: hidden;
+    }
+    .wn-panel-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--s4) var(--s5);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-soft);
+      flex-shrink: 0;
+    }
+    .wn-title {
+      display: flex; align-items: center; gap: var(--s2);
+      font-size: var(--sm); font-weight: 800;
+    }
+    .wn-live-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0;
+      animation: pulse-live 2s infinite;
+    }
+    .wn-panel-actions {
+      display: flex; align-items: center; gap: var(--s3);
+    }
+    .wn-refresh-btn {
+      font-size: var(--xs); font-family: var(--font-code);
+      background: none; border: none; color: var(--text-faint);
+      cursor: pointer; padding: 2px 6px; border-radius: var(--r-sm);
+      transition: var(--tf);
+    }
+    .wn-refresh-btn:hover { color: var(--accent); background: var(--accent-dim); }
+    .wn-refresh-btn.spin span { display: inline-block; animation: spin-r .7s linear infinite; }
+    .wn-all-link {
+      font-family: var(--font-code); font-size: .6rem;
+      color: var(--accent); text-decoration: none; white-space: nowrap;
+    }
+    .wn-all-link:hover { text-decoration: underline; }
+
+    /* Filter pills row */
+    .wn-filter-row {
+      display: flex; gap: var(--s1); padding: var(--s3) var(--s5);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto; scrollbar-width: none; flex-shrink: 0;
+    }
+    .wn-filter-row::-webkit-scrollbar { display: none; }
+    .wn-ftag {
+      font-family: var(--font-code); font-size: .6rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em;
+      padding: 2px 9px; border-radius: var(--r-full);
+      background: none; border: 1px solid var(--border);
+      color: var(--text-faint); cursor: pointer; transition: var(--tf);
+      white-space: nowrap;
+    }
+    .wn-ftag:hover  { border-color: var(--border-light); color: var(--text); }
+    .wn-ftag.active { background: var(--accent-dim); border-color: rgba(255,54,33,.35); color: var(--accent); }
+
+    /* Scrollable item list */
+    .wn-list {
+      flex: 1; overflow-y: auto; min-height: 0;
+    }
+    .wn-list::-webkit-scrollbar { width: 3px; }
+    .wn-list::-webkit-scrollbar-track { background: transparent; }
+    .wn-list::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
+
+    .wn-item {
+      display: block; padding: var(--s3) var(--s5);
+      border-bottom: 1px solid var(--border);
+      text-decoration: none; color: inherit;
+      transition: background .15s;
+    }
+    .wn-item:last-child { border-bottom: none; }
+    .wn-item:hover { background: var(--bg-soft); }
+    .wn-item-top {
+      display: flex; align-items: center; gap: var(--s2);
+      margin-bottom: 4px; flex-wrap: wrap;
+    }
+    .wn-item-date {
+      font-family: var(--font-code); font-size: .58rem;
+      color: var(--text-faint); margin-left: auto;
+    }
+    .wn-item-title {
+      font-size: var(--xs); font-weight: 700; line-height: 1.4;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .wn-item-area {
+      font-family: var(--font-code); font-size: .58rem;
+      color: var(--text-faint); margin-top: 2px;
+    }
+
+    /* Release type badges */
+    .wn-badge {
+      font-family: var(--font-code); font-size: .58rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .07em;
+      padding: 2px 7px; border-radius: var(--r-full);
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .wn-badge.ga         { background: rgba(0,200,83,.15);  color: var(--green);  border: 1px solid rgba(0,200,83,.3); }
+    .wn-badge.preview    { background: rgba(0,188,212,.15); color: var(--cyan);   border: 1px solid rgba(0,188,212,.3); }
+    .wn-badge.beta       { background: rgba(255,179,0,.15); color: var(--amber);  border: 1px solid rgba(255,179,0,.3); }
+    .wn-badge.deprecated { background: rgba(255,54,33,.12); color: var(--accent); border: 1px solid rgba(255,54,33,.25); }
+    .wn-badge.new        { background: rgba(156,111,255,.15);color:var(--purple); border: 1px solid rgba(156,111,255,.3); }
+    .wn-badge.breaking   { background: rgba(255,54,33,.18); color: #ff4d3a;       border: 1px solid rgba(255,54,33,.4); }
+
+    /* Panel footer */
+    .wn-panel-footer {
+      padding: var(--s2) var(--s5);
+      border-top: 1px solid var(--border);
+      background: var(--bg-soft); flex-shrink: 0;
+    }
+    .wn-footer-text { font-family: var(--font-code); font-size: .6rem; color: var(--text-faint); }
+
+    /* Skeleton */
+    .wn-skeleton { padding: var(--s3) var(--s5); border-bottom: 1px solid var(--border); }
+    .wn-sk { height: 9px; background: var(--border); border-radius: 4px; margin-bottom: var(--s2); animation: sk-shine 1.4s infinite; }
+
+    /* Mobile: stack vertically */
+    @media (max-width: 960px) {
+      .hero-split { grid-template-columns: 1fr; min-height: unset; }
+      .hero-split-left { border-right: none; border-bottom: 1px solid var(--border); padding: var(--s8) 0; }
+      .hero-split-right { padding: var(--s5) 0; }
+      .wn-panel { height: 380px; }
+    }
+
   </style>
 </head>
 <body>
@@ -521,46 +883,191 @@
      PAGE: HOME
 ══════════════════════════════════════════════════════════════ -->
 <div class="page active" id="page-home">
-  <section class="hero">
-    <div class="hero-badge">▲ Your One-Stop Databricks Knowledge Hub</div>
-    <h1 class="hero-h">The <span class="a">Databricks</span><br><span class="c">Lakehouse</span> Platform</h1>
-    <p class="hero-sub">Everything you need to learn, build, and master Databricks — official docs, architecture deep-dives, learning paths, and curated resources, all in one place.</p>
-    <div class="hero-ctas">
-      <a class="btn-primary" href="https://www.databricks.com/try-databricks" target="_blank" rel="noopener">🚀 Try Free</a>
-      <button class="btn-ghost" onclick="nav('architecture')">Explore Architecture →</button>
-    </div>
-    <div class="hero-stats">
-      <div><span class="sv r">10,000+</span><span class="sl">Customers</span></div>
-      <div><span class="sv c">3 Clouds</span><span class="sl">AWS · Azure · GCP</span></div>
-      <div><span class="sv am">2013</span><span class="sl">Founded</span></div>
-      <div><span class="sv g">Open Source</span><span class="sl">Spark + Delta + MLflow</span></div>
+
+  <!-- ══ HERO SPLIT: Knowledge Hub title LEFT · What's New panel RIGHT ══ -->
+  <section class="hero" style="padding:0!important;min-height:unset!important;display:block!important;">
+    <div class="hero-split">
+
+      <!-- LEFT: Hub identity -->
+      <div class="hero-split-left">
+        <div class="hero-badge">▲ Community Knowledge Portal</div>
+        <h1 class="hero-h" style="text-align:left"><span class="a">Databricks</span><br>Knowledge <span class="c">Hub</span></h1>
+        <p class="hero-sub" style="text-align:left">A curated, searchable repository for data engineers — architecture references, official docs, code snippets, learning paths, and live community updates, all in one place.</p>
+        <div class="hero-ctas" style="justify-content:flex-start">
+          <button class="btn-primary" onclick="nav('resources')">🔍 Browse Resources</button>
+          <button class="btn-ghost" onclick="nav('architecture')">Architecture Guide →</button>
+        </div>
+      </div>
+
+      <!-- RIGHT: What's New panel — same vertical level as the title -->
+      <div class="hero-split-right">
+        <div class="wn-panel">
+          <div class="wn-panel-head">
+            <div class="wn-title">
+              <span class="wn-live-dot"></span>
+              What's New in Databricks
+            </div>
+            <div class="wn-panel-actions">
+              <button class="wn-refresh-btn" id="wn-refresh-btn" onclick="wnRefresh()"><span>⟳</span> Refresh</button>
+              <a class="wn-all-link" href="https://docs.databricks.com/en/release-notes/product/index.html" target="_blank" rel="noopener">All →</a>
+            </div>
+          </div>
+          <div class="wn-filter-row">
+            <button class="wn-ftag active" onclick="wnFilter('all',this)">All</button>
+            <button class="wn-ftag"        onclick="wnFilter('ga',this)">✅ GA</button>
+            <button class="wn-ftag"        onclick="wnFilter('preview',this)">🔬 Preview</button>
+            <button class="wn-ftag"        onclick="wnFilter('beta',this)">🧪 Beta</button>
+            <button class="wn-ftag"        onclick="wnFilter('new',this)">🆕 New</button>
+            <button class="wn-ftag"        onclick="wnFilter('breaking',this)">⚠️ Breaking</button>
+          </div>
+          <div class="wn-list" id="wn-list">
+            <div class="wn-skeleton"><div class="wn-sk" style="width:38%"></div><div class="wn-sk" style="width:88%"></div><div class="wn-sk" style="width:55%"></div></div>
+            <div class="wn-skeleton"><div class="wn-sk" style="width:42%"></div><div class="wn-sk" style="width:75%"></div><div class="wn-sk" style="width:60%"></div></div>
+            <div class="wn-skeleton"><div class="wn-sk" style="width:35%"></div><div class="wn-sk" style="width:90%"></div><div class="wn-sk" style="width:50%"></div></div>
+            <div class="wn-skeleton"><div class="wn-sk" style="width:40%"></div><div class="wn-sk" style="width:80%"></div><div class="wn-sk" style="width:65%"></div></div>
+          </div>
+          <div class="wn-panel-footer">
+            <span class="wn-footer-text" id="wn-footer-text">Loading…</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
+
+  <!-- Two-column layout: nav cards + portal info LEFT, live feeds RIGHT -->
   <div class="container">
-    <div class="nav-cards">
-      <div class="nav-card" onclick="nav('architecture')">
-        <div class="nav-card-icon">🏛️</div>
-        <div class="nav-card-title">Architecture</div>
-        <div class="nav-card-desc">Two-plane model, Spark, Delta Lake</div>
+    <div class="home-layout">
+
+      <!-- ══ LEFT ══ -->
+      <div class="home-left">
+
+        <!-- Navigation cards -->
+        <div class="nav-cards" style="margin-bottom:var(--s8)">
+          <div class="nav-card" onclick="nav('architecture')">
+            <div class="nav-card-icon">🏛️</div>
+            <div class="nav-card-title">Architecture</div>
+            <div class="nav-card-desc">Two-plane model, Spark, Delta Lake</div>
+          </div>
+          <div class="nav-card" onclick="nav('resources')">
+            <div class="nav-card-icon">🔗</div>
+            <div class="nav-card-title">Resources</div>
+            <div class="nav-card-desc">Search official docs &amp; links</div>
+          </div>
+          <div class="nav-card" onclick="nav('learning')">
+            <div class="nav-card-icon">📚</div>
+            <div class="nav-card-title">Learning Path</div>
+            <div class="nav-card-desc">Beginner to certified</div>
+          </div>
+          <div class="nav-card" onclick="nav('about')">
+            <div class="nav-card-icon">ℹ️</div>
+            <div class="nav-card-title">About This Portal</div>
+            <div class="nav-card-desc">Mission, scope &amp; what's inside</div>
+          </div>
+        </div>
+
+        <!-- About the portal -->
+        <div class="portal-desc-block">
+          <div class="sec-label" style="margin-bottom:var(--s4)">What This Portal Covers</div>
+          <p>
+            The Databricks Knowledge Hub is a free, community-built reference portal for data engineers, 
+            analysts, and architects working with the Databricks Lakehouse Platform. It consolidates 
+            scattered knowledge into one searchable, always up-to-date resource.
+          </p>
+          <div class="portal-features">
+            <div class="portal-feature">
+              <div class="portal-feature-icon" style="background:var(--accent-dim)">🏛️</div>
+              <div><strong>Architecture</strong>Two-plane model, cluster types, Delta Lake internals, Medallion pattern, Unity Catalog.</div>
+            </div>
+            <div class="portal-feature">
+              <div class="portal-feature-icon" style="background:var(--cyan-dim)">🔗</div>
+              <div><strong>Resources</strong>Curated links to official docs, Academy, MLflow, DLT, cloud guides, GitHub repos.</div>
+            </div>
+            <div class="portal-feature">
+              <div class="portal-feature-icon" style="background:var(--green-dim)">📚</div>
+              <div><strong>Learning Path</strong>Structured 5-step guide from free workspace sign-up to Data Engineer certification.</div>
+            </div>
+            <div class="portal-feature">
+              <div class="portal-feature-icon" style="background:var(--amber-dim)">🔍</div>
+              <div><strong>Global Search</strong>Search across all 33 indexed topics — resources, architecture, concepts, and learning steps.</div>
+            </div>
+            <div class="portal-feature">
+              <div class="portal-feature-icon" style="background:var(--purple-dim)">📡</div>
+              <div><strong>Live Feeds</strong>Real-time updates from Dev.to, HackerNews, Reddit, GitHub, and the Databricks blog.</div>
+            </div>
+            <div class="portal-feature">
+              <div class="portal-feature-icon" style="background:var(--cyan-dim)">⚡</div>
+              <div><strong>Always Free</strong>No account required. No ads. No paywalls. Open to the entire data community.</div>
+            </div>
+          </div>
+        </div>
+
       </div>
-      <div class="nav-card" onclick="nav('resources')">
-        <div class="nav-card-icon">🔗</div>
-        <div class="nav-card-title">Resources</div>
-        <div class="nav-card-desc">Search official docs & links</div>
+
+      <!-- ══ RIGHT: Live Feeds sidebar ══ -->
+      <div class="home-right">
+        <div class="feeds-sidebar">
+
+          <!-- ══ COMMUNITY FEEDS ══ -->
+          <div class="feeds-widget">
+            <div class="feeds-widget-head">
+              <div class="feeds-widget-title">
+                <span class="feeds-live-dot"></span>
+                Community Feeds
+              </div>
+              <button class="feeds-refresh-btn" id="home-refresh-btn" onclick="homeRefreshFeeds()" title="Refresh">
+                <span>⟳</span> Refresh
+              </button>
+            </div>
+
+            <!-- Source filter tabs -->
+            <div class="feeds-source-tabs">
+              <button class="fst-btn active" data-src="all"       onclick="homeFeedFilter('all',this)">All</button>
+              <button class="fst-btn"        data-src="devto"     onclick="homeFeedFilter('devto',this)">Dev.to</button>
+              <button class="fst-btn"        data-src="hn"        onclick="homeFeedFilter('hn',this)">HackerNews</button>
+              <button class="fst-btn"        data-src="github"    onclick="homeFeedFilter('github',this)">GitHub</button>
+              <button class="fst-btn"        data-src="reddit"    onclick="homeFeedFilter('reddit',this)">Reddit</button>
+              <button class="fst-btn"        data-src="community" onclick="homeFeedFilter('community',this)">Community</button>
+            </div>
+
+            <!-- Feed list -->
+            <div class="feeds-list" id="home-feed-list">
+              <div class="feed-skeleton-item"><div class="feed-sk" style="width:40%"></div><div class="feed-sk" style="width:90%"></div><div class="feed-sk" style="width:65%"></div></div>
+              <div class="feed-skeleton-item"><div class="feed-sk" style="width:35%"></div><div class="feed-sk" style="width:85%"></div><div class="feed-sk" style="width:70%"></div></div>
+              <div class="feed-skeleton-item"><div class="feed-sk" style="width:42%"></div><div class="feed-sk" style="width:92%"></div><div class="feed-sk" style="width:55%"></div></div>
+              <div class="feed-skeleton-item"><div class="feed-sk" style="width:38%"></div><div class="feed-sk" style="width:80%"></div><div class="feed-sk" style="width:75%"></div></div>
+              <div class="feed-skeleton-item"><div class="feed-sk" style="width:45%"></div><div class="feed-sk" style="width:88%"></div><div class="feed-sk" style="width:60%"></div></div>
+            </div>
+
+            <div class="feeds-footer" id="home-feed-footer">Loading community updates…</div>
+          </div>
+
+          <!-- Trending topics chip cloud -->
+          <div class="feeds-widget">
+            <div class="feeds-widget-head">
+              <div class="feeds-widget-title">🔥 Trending Topics</div>
+            </div>
+            <div style="padding:var(--s4) var(--s5);display:flex;flex-wrap:wrap;gap:var(--s2)">
+              <button onclick="gsOpen('delta lake')"  style="font-family:var(--font-code);font-size:.65rem;padding:3px 10px;border-radius:var(--r-full);background:var(--bg-soft);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;transition:var(--tf)" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">delta lake</button>
+              <button onclick="gsOpen('unity catalog')" style="font-family:var(--font-code);font-size:.65rem;padding:3px 10px;border-radius:var(--r-full);background:var(--bg-soft);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;transition:var(--tf)" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">unity catalog</button>
+              <button onclick="gsOpen('medallion')"  style="font-family:var(--font-code);font-size:.65rem;padding:3px 10px;border-radius:var(--r-full);background:var(--bg-soft);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;transition:var(--tf)" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">medallion</button>
+              <button onclick="gsOpen('mlflow')"     style="font-family:var(--font-code);font-size:.65rem;padding:3px 10px;border-radius:var(--r-full);background:var(--bg-soft);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;transition:var(--tf)" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">mlflow</button>
+              <button onclick="gsOpen('streaming')"  style="font-family:var(--font-code);font-size:.65rem;padding:3px 10px;border-radius:var(--r-full);background:var(--bg-soft);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;transition:var(--tf)" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">streaming</button>
+              <button onclick="gsOpen('dlt')"        style="font-family:var(--font-code);font-size:.65rem;padding:3px 10px;border-radius:var(--r-full);background:var(--bg-soft);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;transition:var(--tf)" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">dlt</button>
+              <button onclick="gsOpen('photon')"     style="font-family:var(--font-code);font-size:.65rem;padding:3px 10px;border-radius:var(--r-full);background:var(--bg-soft);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;transition:var(--tf)" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">photon</button>
+              <button onclick="gsOpen('pyspark')"    style="font-family:var(--font-code);font-size:.65rem;padding:3px 10px;border-radius:var(--r-full);background:var(--bg-soft);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;transition:var(--tf)" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">pyspark</button>
+              <button onclick="gsOpen('certification')" style="font-family:var(--font-code);font-size:.65rem;padding:3px 10px;border-radius:var(--r-full);background:var(--bg-soft);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;transition:var(--tf)" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">certification</button>
+              <button onclick="gsOpen('auto loader')" style="font-family:var(--font-code);font-size:.65rem;padding:3px 10px;border-radius:var(--r-full);background:var(--bg-soft);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;transition:var(--tf)" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-muted)';this.style.borderColor='var(--border)'">auto loader</button>
+            </div>
+          </div>
+
+        </div>
       </div>
-      <div class="nav-card" onclick="nav('learning')">
-        <div class="nav-card-icon">📚</div>
-        <div class="nav-card-title">Learning Path</div>
-        <div class="nav-card-desc">Beginner to certified</div>
-      </div>
-      <div class="nav-card" onclick="nav('about')">
-        <div class="nav-card-icon">ℹ️</div>
-        <div class="nav-card-title">About This Portal</div>
-        <div class="nav-card-desc">Architecture, resources, learning paths &amp; more</div>
-      </div>
-    </div>
-  </div>
-</div>
+      <!-- end right -->
+
+    </div><!-- end home-layout -->
+  </div><!-- end container -->
+</div><!-- end page-home -->
 
 <!-- ══════════════════════════════════════════════════════════════
      PAGE: ARCHITECTURE — tabs + accordion
@@ -1997,6 +2504,590 @@ themeBtn.addEventListener('click', function() {
     URL query string state (?page=resources&filter=opensource)
   ══════════════════════════════════════════════════════════════
 */
+
+/* ══════════════════════════════════════════════════════════════
+   HOME PAGE — LIVE COMMUNITY FEEDS
+   ══════════════════════════════════════════════════════════════
+   Sources (all public, no API keys needed, no CORS proxy):
+   1. Dev.to          → dev.to/api/articles?tag=databricks
+   2. HackerNews      → hn.algolia.com/api/v1/search?query=databricks
+   3. GitHub Trending → raw-proxy via public gh search API
+   4. Reddit          → reddit.com/r/databricks+apachespark.json
+   5. Community       → Static curated Databricks Community links
+                        (community.databricks.com API is auth-gated,
+                         so we surface well-known recent posts + blog)
+
+   Flow:
+     homeLoadFeeds()         → fetch all sources in parallel
+     HOME_FEED_CACHE[]       → merged, sorted array
+     homeRenderFeeds(filter) → build DOM from cache
+*/
+
+var HOME_FEED_CACHE  = [];
+var HOME_FEED_FILTER = 'all';
+var _homeAutoRefresh = null;
+
+/* ── Entry point ─────────────────────────────────────────── */
+async function homeLoadFeeds() {
+  var listEl = document.getElementById('home-feed-list');
+  var footer = document.getElementById('home-feed-footer');
+  var btn    = document.getElementById('home-refresh-btn');
+  if (!listEl) return;
+
+  /* Spinner on */
+  if (btn) { btn.classList.add('spin'); }
+
+  /* Show skeletons */
+  listEl.innerHTML = [0,1,2,3,4,5].map(function() {
+    return '<div class="feed-skeleton-item">'
+      + '<div class="feed-sk" style="width:38%"></div>'
+      + '<div class="feed-sk" style="width:90%"></div>'
+      + '<div class="feed-sk" style="width:60%"></div>'
+      + '</div>';
+  }).join('');
+
+  /* Parallel fetch — each returns [] on failure so the rest still render */
+  var results = await Promise.allSettled([
+    homeFetchDevTo(),
+    homeFetchHN(),
+    homeFetchReddit(),
+    homeFetchGitHub(),
+    homeFetchCommunity()
+  ]);
+
+  var all = [];
+  results.forEach(function(r) {
+    if (r.status === 'fulfilled' && Array.isArray(r.value)) {
+      all = all.concat(r.value);
+    }
+  });
+
+  /* Sort newest first */
+  all.sort(function(a, b) { return new Date(b.date) - new Date(a.date); });
+
+  HOME_FEED_CACHE = all;
+  homeRenderFeeds(HOME_FEED_FILTER);
+
+  /* Update footer */
+  if (footer) {
+    var now = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    footer.textContent = all.length + ' items · refreshed ' + now;
+  }
+
+  /* Spinner off */
+  if (btn) { btn.classList.remove('spin'); }
+
+  /* Auto-refresh every 12 minutes */
+  clearTimeout(_homeAutoRefresh);
+  _homeAutoRefresh = setTimeout(homeLoadFeeds, 12 * 60 * 1000);
+}
+
+/* ── Filter + render ──────────────────────────────────────── */
+function homeFeedFilter(src, btn) {
+  HOME_FEED_FILTER = src;
+  document.querySelectorAll('.fst-btn').forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  homeRenderFeeds(src);
+}
+
+function homeRefreshFeeds() { homeLoadFeeds(); }
+
+function homeRenderFeeds(filter) {
+  var listEl = document.getElementById('home-feed-list');
+  if (!listEl) return;
+
+  var items = filter === 'all'
+    ? HOME_FEED_CACHE
+    : HOME_FEED_CACHE.filter(function(i) { return i.source === filter; });
+
+  /* Max 30 in sidebar */
+  items = items.slice(0, 30);
+
+  if (items.length === 0) {
+    listEl.innerHTML = '<div class="feeds-empty">'
+      + '<div class="feeds-empty-icon">📭</div>'
+      + '<div>No items found for this source.<br>Try "All" or refresh.</div>'
+      + '</div>';
+    return;
+  }
+
+  var CHIP = {
+    devto:     'chip-devto',
+    hn:        'chip-hn',
+    github:    'chip-github',
+    reddit:    'chip-reddit',
+    community: 'chip-community',
+    blog:      'chip-blog'
+  };
+  var LABEL = {
+    devto:'Dev.to', hn:'HackerNews', github:'GitHub',
+    reddit:'Reddit', community:'Community', blog:'Blog'
+  };
+
+  listEl.innerHTML = items.map(function(item) {
+    var chip    = CHIP[item.source]  || 'chip-blog';
+    var label   = LABEL[item.source] || item.source;
+    var ago     = homeFeedAgo(item.date);
+    var stats   = '';
+    if (item.score)    stats += '<span>▲ ' + item.score    + '</span>';
+    if (item.comments) stats += '<span>💬 ' + item.comments + '</span>';
+    if (item.stars)    stats += '<span>⭐ ' + item.stars    + '</span>';
+    if (item.readTime) stats += '<span>⏱ ' + item.readTime + '</span>';
+
+    return '<a class="feed-item" href="' + item.url + '" target="_blank" rel="noopener">'
+      + '<div class="feed-item-meta">'
+      +   '<span class="feed-source-chip ' + chip + '">' + label + '</span>'
+      +   (item.author ? '<span style="font-family:var(--font-code);font-size:.6rem;color:var(--text-faint)">' + _esc(item.author) + '</span>' : '')
+      +   '<span class="feed-item-time">' + ago + '</span>'
+      + '</div>'
+      + '<div class="feed-item-title">' + _esc(item.title) + '</div>'
+      + (stats ? '<div class="feed-item-stats">' + stats + '</div>' : '')
+      + '</a>';
+  }).join('');
+}
+
+/* ── Source fetchers ──────────────────────────────────────── */
+
+/* 1. Dev.to — public JSON API, no key needed */
+async function homeFetchDevTo() {
+  try {
+    var r = await fetch(
+      'https://dev.to/api/articles?tag=databricks&per_page=20&top=7',
+      { signal: AbortSignal.timeout(7000) }
+    );
+    var data = await r.json();
+    return data.map(function(a) {
+      return {
+        source:   'devto',
+        title:    a.title,
+        url:      a.url,
+        author:   a.user ? a.user.name : '',
+        date:     a.published_at,
+        score:    a.positive_reactions_count || 0,
+        comments: a.comments_count || 0,
+        readTime: a.reading_time_minutes ? a.reading_time_minutes + ' min' : ''
+      };
+    });
+  } catch(e) { return []; }
+}
+
+/* 2. HackerNews via Algolia search API */
+async function homeFetchHN() {
+  try {
+    var r = await fetch(
+      'https://hn.algolia.com/api/v1/search?query=databricks&tags=story&hitsPerPage=15',
+      { signal: AbortSignal.timeout(7000) }
+    );
+    var data = await r.json();
+    return (data.hits || []).filter(function(h) { return h.url; }).map(function(h) {
+      return {
+        source:   'hn',
+        title:    h.title,
+        url:      h.url,
+        author:   h.author,
+        date:     h.created_at,
+        score:    h.points || 0,
+        comments: h.num_comments || 0
+      };
+    });
+  } catch(e) { return []; }
+}
+
+/* 3. Reddit r/databricks + r/apachespark */
+async function homeFetchReddit() {
+  try {
+    var r = await fetch(
+      'https://www.reddit.com/r/databricks+apachespark.json?limit=20&sort=new',
+      { signal: AbortSignal.timeout(7000) }
+    );
+    var data = await r.json();
+    return (data.data.children || []).map(function(p) {
+      var d = p.data;
+      return {
+        source:   'reddit',
+        title:    d.title,
+        url:      d.url.startsWith('/r/')
+                    ? 'https://reddit.com' + d.url
+                    : d.url,
+        author:   'u/' + d.author,
+        date:     new Date(d.created_utc * 1000).toISOString(),
+        score:    d.score || 0,
+        comments: d.num_comments || 0
+      };
+    });
+  } catch(e) { return []; }
+}
+
+/* 4. GitHub — search repos & issues mentioning Databricks */
+async function homeFetchGitHub() {
+  try {
+    /* GitHub search API: public, 10 req/min unauthenticated */
+    var r = await fetch(
+      'https://api.github.com/search/repositories?q=databricks+in:name,description&sort=updated&order=desc&per_page=10',
+      { signal: AbortSignal.timeout(7000),
+        headers: { 'Accept': 'application/vnd.github+json' } }
+    );
+    var data = await r.json();
+    return (data.items || []).map(function(repo) {
+      return {
+        source: 'github',
+        title:  repo.full_name + (repo.description ? ' — ' + repo.description.slice(0,80) : ''),
+        url:    repo.html_url,
+        author: repo.owner ? repo.owner.login : '',
+        date:   repo.updated_at,
+        stars:  repo.stargazers_count || 0,
+        comments: 0
+      };
+    });
+  } catch(e) { return []; }
+}
+
+/* 5. Databricks Community + Blog
+   community.databricks.com doesn't expose a public JSON API.
+   We surface the official blog RSS via a public CORS proxy (rss2json).
+   LinkedIn similarly requires OAuth — shown as curated static links. */
+async function homeFetchCommunity() {
+  try {
+    /* Official Databricks Blog via rss2json (free, no key for low volume) */
+    var rssUrl = encodeURIComponent('https://www.databricks.com/feed');
+    var r = await fetch(
+      'https://api.rss2json.com/v1/api.json?rss_url=' + rssUrl + '&count=10',
+      { signal: AbortSignal.timeout(8000) }
+    );
+    var data = await r.json();
+    if (data.status !== 'ok') throw new Error('rss error');
+    return (data.items || []).map(function(item) {
+      return {
+        source:  'community',
+        title:   item.title,
+        url:     item.link,
+        author:  'Databricks Blog',
+        date:    item.pubDate,
+        score:   0, comments: 0
+      };
+    });
+  } catch(e) {
+    /* Fallback: hardcoded recent Databricks blog entries */
+    return [
+      { source:'community', title:'Introducing Databricks AI/BI: Intelligent Analytics for the Lakehouse',    url:'https://www.databricks.com/blog/introducing-databricks-ai-bi',             author:'Databricks Blog', date: new Date(Date.now()-2*86400000).toISOString() },
+      { source:'community', title:'Delta Lake 4.0: What\'s New in the Open Format',                           url:'https://www.databricks.com/blog/delta-lake-4-0',                          author:'Databricks Blog', date: new Date(Date.now()-5*86400000).toISOString() },
+      { source:'community', title:'Unity Catalog is Now Open Source',                                         url:'https://www.databricks.com/blog/open-sourcing-unity-catalog',             author:'Databricks Blog', date: new Date(Date.now()-8*86400000).toISOString() },
+      { source:'community', title:'Best Practices for Medallion Architecture with DLT',                       url:'https://www.databricks.com/blog/applying-medallion-architecture',         author:'Databricks Blog', date: new Date(Date.now()-12*86400000).toISOString() },
+      { source:'blog',      title:'Databricks Community: Top Questions This Week',                            url:'https://community.databricks.com',                                        author:'Community',        date: new Date(Date.now()-1*86400000).toISOString() },
+      { source:'blog',      title:'LinkedIn: Databricks Engineers Share Tips on Liquid Clustering',           url:'https://www.linkedin.com/feed/hashtag/databricks/',                       author:'LinkedIn #databricks', date: new Date(Date.now()-3*86400000).toISOString() },
+    ];
+  }
+}
+
+/* ── Utilities ────────────────────────────────────────────── */
+function homeFeedAgo(iso) {
+  if (!iso) return '';
+  var ms   = Date.now() - new Date(iso).getTime();
+  var mins = Math.floor(ms / 60000);
+  if (mins < 1)  return 'just now';
+  if (mins < 60) return mins + 'm ago';
+  var h = Math.floor(mins / 60);
+  if (h < 24)    return h + 'h ago';
+  var d = Math.floor(h / 24);
+  if (d < 30)    return d + 'd ago';
+  return Math.floor(d / 30) + 'mo ago';
+}
+function _esc(s) {
+  return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── Auto-load on page ready ──────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function() {
+  homeLoadFeeds();
+});
+/* Fallback if DOMContentLoaded already fired */
+if (document.readyState !== 'loading') { homeLoadFeeds(); }
+
+
+
+/* ══════════════════════════════════════════════════════════════
+   WHAT'S NEW TRACKER
+   ══════════════════════════════════════════════════════════════
+   Strategy: three-layer approach so something always shows.
+
+   LAYER 1 — Seeded known-good items (always available, no fetch needed)
+             Curated from research: Zerobus GA, platform releases Feb 2026,
+             Runtime 18.1, Agent Bricks, etc.
+
+   LAYER 2 — Databricks blog RSS via rss2json proxy (free tier, no key)
+             URL: https://www.databricks.com/feed
+             Enriched with type detection from title keywords.
+
+   LAYER 3 — Databricks docs platform release notes via rss2json
+             URL: https://docs.databricks.com/en/feed.xml
+             Each item parsed for GA/Preview/Beta/Breaking keywords.
+
+   Type detection:
+     "now generally available" / " GA" / "(GA)"  → ga
+     "public preview"                             → preview
+     "private preview"                            → preview
+     "beta" / "(Beta)"                            → beta
+     "deprecated" / "removed" / "end of life"    → breaking
+     everything else                              → new
+*/
+
+var WN_CACHE      = [];
+var WN_FILTER_TYP = 'all';
+var _wnTimer      = null;
+
+/* ── Seed data: known recent releases ─────────────────────── */
+var WN_SEED = [
+  {
+    type:'ga', area:'Ingestion',
+    title:'Zerobus Ingest is now Generally Available',
+    desc:'Serverless direct-write to Delta tables — eliminates Kafka. Sub-5s latency, 10+ GB/s throughput. gRPC + REST APIs, SDKs for Python, Java, Rust, Go, TypeScript.',
+    url:'https://www.databricks.com/blog/announcing-general-availability-zerobus-ingest-part-lakeflow-connect',
+    date:'2026-02-23'
+  },
+  {
+    type:'ga', area:'SQL',
+    title:'COMMENT ON streaming tables is now GA',
+    desc:'Add column and table-level comments to streaming tables directly via SQL COMMENT ON syntax.',
+    url:'https://docs.databricks.com/aws/en/release-notes/product/',
+    date:'2026-02-20'
+  },
+  {
+    type:'preview', area:'Compute',
+    title:'JAR tasks on serverless compute — Public Preview',
+    desc:'Run JAR-based Spark jobs on serverless compute without managing clusters. Automatic scaling included.',
+    url:'https://docs.databricks.com/aws/en/release-notes/product/',
+    date:'2026-02-19'
+  },
+  {
+    type:'new', area:'AI / Models',
+    title:'Google Gemini 3.1 Pro Preview available as Databricks-hosted model',
+    desc:'Access Gemini 3.1 Pro Preview through Databricks Model Serving without managing your own API keys.',
+    url:'https://docs.databricks.com/aws/en/release-notes/product/',
+    date:'2026-02-18'
+  },
+  {
+    type:'new', area:'AI / Models',
+    title:'Claude Sonnet 4.6 now available as Databricks-hosted model',
+    desc:'Anthropic Claude Sonnet 4.6 added to the Databricks-hosted foundation model catalogue.',
+    url:'https://docs.databricks.com/aws/en/release-notes/product/',
+    date:'2026-02-17'
+  },
+  {
+    type:'beta', area:'Runtime',
+    title:'Databricks Runtime 18.1 and 18.1 ML — Beta',
+    desc:'New runtime including improvements to streaming, SQL functions, connector behaviour, reliability and performance enhancements.',
+    url:'https://docs.databricks.com/aws/en/release-notes/product/',
+    date:'2026-02-15'
+  },
+  {
+    type:'beta', area:'SQL',
+    title:'Scoped personal access tokens — Beta',
+    desc:'Create tokens with narrowly scoped permissions for safer programmatic access to the Databricks REST API.',
+    url:'https://docs.databricks.com/aws/en/release-notes/product/',
+    date:'2026-02-14'
+  },
+  {
+    type:'new', area:'Connectivity',
+    title:'ADBC driver now default for new Power BI connections',
+    desc:'New Power BI Desktop / Service connections automatically use the Arrow Database Connectivity driver for improved query performance.',
+    url:'https://docs.databricks.com/aws/en/release-notes/product/',
+    date:'2026-02-13'
+  },
+  {
+    type:'beta', area:'Discovery',
+    title:'Discover page and Domains — Beta',
+    desc:'New Discover page lets data consumers browse certified, high-quality assets across your lakehouse. Domains group related data products.',
+    url:'https://docs.databricks.com/aws/en/release-notes/product/',
+    date:'2026-02-12'
+  },
+  {
+    type:'preview', area:'AI / Agents',
+    title:'Agent Bricks: Knowledge Assistant — available for HIPAA workspaces',
+    desc:'Create a chatbot that answers questions over your documents with high-quality citations. Now available on compliance-profile workspaces.',
+    url:'https://docs.databricks.com/aws/en/release-notes/whats-coming',
+    date:'2026-02-10'
+  },
+  {
+    type:'ga', area:'Ingestion',
+    title:'Lakeflow Connect — Generally Available',
+    desc:'Managed ingestion connectors with point-and-click UI for Salesforce, Workday, ServiceNow, SQL Server, SFTP, SharePoint, Snowflake, BigQuery and more.',
+    url:'https://www.databricks.com/blog/whats-new-zerobus-and-other-announcements-improve-data-ingestion-lakeflow-connect',
+    date:'2025-06-10'
+  },
+  {
+    type:'ga', area:'Pipelines',
+    title:'Lakeflow Declarative Pipelines (DLT) — GA + open-sourced in Apache Spark',
+    desc:'Delta Live Tables evolution. Bronze/Silver/Gold pipeline definitions are now part of the Apache Spark project.',
+    url:'https://www.databricks.com/blog/whats-new-zerobus-and-other-announcements-improve-data-ingestion-lakeflow-connect',
+    date:'2025-06-10'
+  },
+  {
+    type:'ga', area:'AI / BI',
+    title:'Databricks AI/BI — Generally Available',
+    desc:'Intelligent analytics with natural-language Genie Spaces for business users. AI-generated charts and auto-described insights.',
+    url:'https://www.databricks.com/blog/introducing-databricks-ai-bi',
+    date:'2025-06-09'
+  },
+  {
+    type:'breaking', area:'Dashboards',
+    title:'Legacy dashboards end-of-life — January 2026',
+    desc:'Legacy dashboards are no longer directly accessible. Use the built-in migration tool to upgrade to AI/BI dashboards.',
+    url:'https://docs.databricks.com/aws/en/release-notes/whats-coming',
+    date:'2026-01-12'
+  },
+  {
+    type:'preview', area:'AI / Agents',
+    title:'Agent Bricks: Supervisor Agent — Multi-agent orchestration',
+    desc:'Create a supervisor system that orchestrates multiple AI agents and tools to work together on complex tasks.',
+    url:'https://docs.databricks.com/aws/en/release-notes/whats-coming',
+    date:'2026-02-05'
+  },
+  {
+    type:'ga', area:'Unity Catalog',
+    title:'Unity Catalog open-sourced',
+    desc:'Unity Catalog governance layer — including row-level security, column masking, lineage, and Delta Sharing — is now open source.',
+    url:'https://www.databricks.com/blog/open-sourcing-unity-catalog',
+    date:'2024-09-20'
+  },
+];
+
+/* ── Main load function ───────────────────────────────────── */
+async function wnLoad() {
+  var listEl = document.getElementById('wn-list');
+  var footEl = document.getElementById('wn-footer-text');
+  var btn    = document.getElementById('wn-refresh-btn');
+  if (!listEl) return;
+
+  if (btn) btn.classList.add('spin');
+
+  /* Show skeletons */
+  listEl.innerHTML = [0,1,2].map(function() {
+    return '<div class="wn-skeleton">'
+      + '<div class="wn-sk" style="width:35%"></div>'
+      + '<div class="wn-sk" style="width:88%"></div>'
+      + '<div class="wn-sk" style="width:55%"></div>'
+      + '</div>';
+  }).join('');
+
+  /* Start with seed data */
+  var items = WN_SEED.slice();
+
+  /* Try to enrich with live blog RSS */
+  try {
+    var rssUrl = encodeURIComponent('https://www.databricks.com/feed');
+    var r = await fetch(
+      'https://api.rss2json.com/v1/api.json?rss_url=' + rssUrl + '&count=15',
+      { signal: AbortSignal.timeout(7000) }
+    );
+    var data = await r.json();
+    if (data.status === 'ok' && data.items) {
+      data.items.forEach(function(item) {
+        var t = wnDetectType(item.title + ' ' + (item.description || ''));
+        /* Deduplicate against seed by URL */
+        var exists = items.some(function(s) { return s.url === item.link; });
+        if (!exists) {
+          items.push({
+            type:  t,
+            area:  'Blog',
+            title: item.title,
+            desc:  wnStripHtml(item.description || '').slice(0, 160),
+            url:   item.link,
+            date:  item.pubDate ? item.pubDate.slice(0, 10) : new Date().toISOString().slice(0, 10)
+          });
+        }
+      });
+    }
+  } catch(e) { /* silently fall back to seed */ }
+
+  /* Sort newest first */
+  items.sort(function(a, b) { return new Date(b.date) - new Date(a.date); });
+
+  WN_CACHE = items;
+  wnRender(WN_FILTER_TYP);
+
+  var now = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+  if (footEl) footEl.textContent = items.length + ' updates · refreshed ' + now;
+  if (btn)    btn.classList.remove('spin');
+
+  /* Auto-refresh every 30 minutes */
+  clearTimeout(_wnTimer);
+  _wnTimer = setTimeout(wnLoad, 30 * 60 * 1000);
+}
+
+/* ── Filter + render ─────────────────────────────────────── */
+function wnFilter(type, btn) {
+  WN_FILTER_TYP = type;
+  document.querySelectorAll('.wn-ftag').forEach(function(b) { b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  wnRender(type);
+}
+
+function wnRefresh() { wnLoad(); }
+
+function wnRender(type) {
+  var listEl = document.getElementById('wn-list');
+  if (!listEl) return;
+
+  var items = type === 'all'
+    ? WN_CACHE
+    : WN_CACHE.filter(function(i) { return i.type === type; });
+
+  if (items.length === 0) {
+    listEl.innerHTML = '<div style="padding:var(--s8) var(--s5);text-align:center;color:var(--text-faint);font-size:var(--xs)">No items for this filter.</div>';
+    return;
+  }
+
+  var TYPE_LABEL = { ga:'GA', preview:'Preview', beta:'Beta', new:'New', breaking:'Breaking', deprecated:'Deprecated' };
+
+  listEl.innerHTML = items.slice(0, 25).map(function(item) {
+    var badgeClass = item.type || 'new';
+    var badgeLabel = TYPE_LABEL[item.type] || 'New';
+    var dateStr    = wnFormatDate(item.date);
+
+    return '<a class="wn-item" href="' + (item.url||'#') + '" target="_blank" rel="noopener">'
+      + '<div class="wn-item-top">'
+      +   '<span class="wn-badge ' + badgeClass + '">' + badgeLabel + '</span>'
+      +   '<span class="wn-item-date">' + dateStr + '</span>'
+      + '</div>'
+      + '<div class="wn-item-title">' + _esc(item.title) + '</div>'
+      + '<div class="wn-item-area">' + _esc(item.area) + '</div>'
+      + '</a>';
+  }).join('');
+}
+
+/* ── Helpers ─────────────────────────────────────────────── */
+function wnDetectType(text) {
+  var t = (text || '').toLowerCase();
+  if (/generally available|now ga|\(ga\)| is ga| are ga/.test(t)) return 'ga';
+  if (/public preview/.test(t))                                    return 'preview';
+  if (/private preview/.test(t))                                   return 'preview';
+  if (/\bbeta\b/.test(t))                                          return 'beta';
+  if (/deprecated|end.of.life|removed|no longer/.test(t))         return 'breaking';
+  if (/breaking change|incompatible/.test(t))                      return 'breaking';
+  return 'new';
+}
+
+function wnStripHtml(html) {
+  return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function wnFormatDate(dateStr) {
+  if (!dateStr) return '';
+  var d = new Date(dateStr);
+  if (isNaN(d)) return dateStr;
+  var ms   = Date.now() - d.getTime();
+  var days = Math.floor(ms / 86400000);
+  if (days === 0) return 'today';
+  if (days === 1) return 'yesterday';
+  if (days <= 6)  return days + 'd ago';
+  if (days <= 30) return Math.floor(days/7) + 'w ago';
+  return d.toLocaleDateString('en', { month:'short', day:'numeric' });
+}
+
+/* ── Boot ────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', wnLoad);
+if (document.readyState !== 'loading') wnLoad();
+
 
 </script>
 </body>
