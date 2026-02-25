@@ -687,30 +687,29 @@
     ══════════════════════════════════════════════════════════════ */
     .hero-split {
       display: grid;
-      grid-template-columns: 1fr 380px;
+      grid-template-columns: 1fr 360px;
       gap: 0;
-      align-items: stretch;
-      min-height: calc(100vh - var(--navbar-h));
+      align-items: start;
       max-width: var(--max-w);
       margin: 0 auto;
       padding: 0 var(--s8);
     }
     .hero-split-left {
       display: flex; flex-direction: column;
-      justify-content: center;
-      padding: var(--s12) var(--s8) var(--s12) 0;
+      justify-content: flex-start;
+      padding: var(--s8) var(--s8) var(--s8) 0;
       border-right: 1px solid var(--border);
     }
     .hero-split-right {
       display: flex; flex-direction: column;
-      padding: var(--s6) 0 var(--s6) var(--s6);
+      padding: var(--s5) 0 var(--s5) var(--s6);
       overflow: hidden;
     }
 
-    /* What's New panel (vertical, sits in hero-split-right) */
+    /* What's New panel — compact height, scrolls internally */
     .wn-panel {
       display: flex; flex-direction: column;
-      height: 100%; min-height: 0;
+      height: 100%; min-height: 0; max-height: 320px;
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--r-xl);
@@ -829,10 +828,114 @@
 
     /* Mobile: stack vertically */
     @media (max-width: 960px) {
-      .hero-split { grid-template-columns: 1fr; min-height: unset; }
+      .hero-split { grid-template-columns: 1fr; min-height: unset; padding: 0 var(--s4); }
       .hero-split-left { border-right: none; border-bottom: 1px solid var(--border); padding: var(--s8) 0; }
       .hero-split-right { padding: var(--s5) 0; }
-      .wn-panel { height: 380px; }
+      .wn-panel { min-height: 0; max-height: 300px; }
+    }
+
+
+    /* ══════════════════════════════════════════════════════════════
+       WHO IS THIS FOR — platform visual + role cards
+    ══════════════════════════════════════════════════════════════ */
+    .roles-section {
+      margin-bottom: var(--s8);
+    }
+    .roles-visual-wrap {
+      display: flex; align-items: center; gap: var(--s6);
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--r-xl); padding: var(--s6);
+      margin-bottom: var(--s5);
+    }
+    .roles-logo-area {
+      flex-shrink: 0; display: flex; flex-direction: column;
+      align-items: center; gap: var(--s3);
+    }
+    .roles-logo-svg {
+      width: 72px; height: 72px;
+      filter: drop-shadow(0 0 16px rgba(255,54,33,.3));
+    }
+    .roles-logo-label {
+      font-family: var(--font-code); font-size: .65rem; font-weight: 700;
+      color: var(--text-faint); text-transform: uppercase; letter-spacing: .1em;
+      white-space: nowrap;
+    }
+    .roles-divider {
+      width: 1px; height: 60px; background: var(--border); flex-shrink: 0;
+    }
+    .roles-tagline {
+      flex: 1;
+    }
+    .roles-tagline-head {
+      font-size: var(--base); font-weight: 800; margin-bottom: 4px;
+    }
+    .roles-tagline-sub {
+      font-size: var(--xs); color: var(--text-muted); line-height: 1.6;
+    }
+
+    /* Role cards */
+    .roles-label {
+      font-family: var(--font-code); font-size: .65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .1em; color: var(--text-faint);
+      margin-bottom: var(--s3);
+    }
+    .roles-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--s3);
+    }
+    .role-card {
+      position: relative; display: flex; flex-direction: column;
+      align-items: center; gap: var(--s2);
+      padding: var(--s4) var(--s3);
+      background: var(--bg-soft); border: 1px solid var(--border);
+      border-radius: var(--r-lg); cursor: pointer;
+      transition: var(--tn); overflow: hidden; text-align: center;
+    }
+    .role-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 2px; background: var(--role-color, var(--accent));
+      transform: scaleX(0); transform-origin: left;
+      transition: transform .25s ease;
+    }
+    .role-card:hover { border-color: var(--border-light); background: var(--bg-card); transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+    .role-card:hover::before { transform: scaleX(1); }
+    .role-card-icon {
+      width: 40px; height: 40px; border-radius: var(--r-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; background: var(--role-bg, var(--accent-dim));
+      flex-shrink: 0;
+    }
+    .role-card-name {
+      font-size: .72rem; font-weight: 800; line-height: 1.3;
+    }
+    .role-card-tools {
+      font-family: var(--font-code); font-size: .58rem;
+      color: var(--text-faint); line-height: 1.5;
+    }
+    .role-card-badge {
+      font-family: var(--font-code); font-size: .55rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em;
+      padding: 1px 6px; border-radius: var(--r-full);
+      background: var(--role-bg, var(--accent-dim));
+      color: var(--role-color, var(--accent));
+      border: 1px solid var(--role-border, rgba(255,54,33,.25));
+      margin-top: auto;
+    }
+    .role-card-coming {
+      position: absolute; top: 6px; right: 6px;
+      font-family: var(--font-code); font-size: .5rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em; color: var(--text-faint);
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--r-full); padding: 1px 5px;
+    }
+    @media (max-width: 900px) {
+      .roles-grid { grid-template-columns: repeat(3, 1fr); }
+      .roles-visual-wrap { flex-direction: column; align-items: flex-start; }
+      .roles-divider { width: 60px; height: 1px; }
+    }
+    @media (max-width: 500px) {
+      .roles-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
   </style>
@@ -941,6 +1044,94 @@
 
       <!-- ══ LEFT ══ -->
       <div class="home-left">
+
+
+        <!-- ══ WHO IS THIS FOR: platform visual + role cards ══ -->
+        <div class="roles-section">
+
+          <!-- Logo + tagline strip -->
+          <div class="roles-visual-wrap">
+            <div class="roles-logo-area">
+              <!-- Databricks ▲ triangle logo (SVG) -->
+              <svg class="roles-logo-svg" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- outer glow circle -->
+                <circle cx="40" cy="40" r="38" fill="rgba(255,54,33,.08)" stroke="rgba(255,54,33,.18)" stroke-width="1"/>
+                <!-- main triangle -->
+                <path d="M40 12 L68 58 L12 58 Z" fill="url(#db-grad)" opacity=".95"/>
+                <!-- inner lighter triangle -->
+                <path d="M40 24 L58 54 L22 54 Z" fill="rgba(255,255,255,.12)"/>
+                <!-- horizontal bar accent -->
+                <rect x="20" y="60" width="40" height="3" rx="1.5" fill="rgba(255,54,33,.5)"/>
+                <defs>
+                  <linearGradient id="db-grad" x1="40" y1="12" x2="40" y2="58" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#ff3621"/>
+                    <stop offset="100%" stop-color="#c42010"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <span class="roles-logo-label">Databricks</span>
+            </div>
+
+            <div class="roles-divider"></div>
+
+            <div class="roles-tagline">
+              <div class="roles-tagline-head">Who benefits from this portal?</div>
+              <div class="roles-tagline-sub">
+                Whether you build pipelines, train models, govern data, or analyse results —
+                this portal has resources tailored to your role.
+                Click a role below to explore curated content. <em style="color:var(--accent);font-style:normal">Personalised paths coming soon.</em>
+              </div>
+            </div>
+          </div>
+
+          <!-- Role cards -->
+          <div class="roles-label">Select your role</div>
+          <div class="roles-grid">
+
+            <div class="role-card" onclick="roleClick('data-engineer')"
+                 style="--role-color:var(--accent);--role-bg:var(--accent-dim);--role-border:rgba(255,54,33,.25)">
+              <div class="role-card-icon">⚙️</div>
+              <div class="role-card-name">Data Engineer</div>
+              <div class="role-card-tools">PySpark · DLT · Auto Loader · Delta</div>
+              <span class="role-card-badge">Pipelines</span>
+            </div>
+
+            <div class="role-card" onclick="roleClick('data-scientist')"
+                 style="--role-color:var(--cyan);--role-bg:var(--cyan-dim);--role-border:rgba(0,188,212,.25)">
+              <div class="role-card-icon">🧪</div>
+              <div class="role-card-name">Data Scientist</div>
+              <div class="role-card-tools">MLflow · Feature Store · AutoML</div>
+              <span class="role-card-badge">ML / AI</span>
+            </div>
+
+            <div class="role-card" onclick="roleClick('platform-admin')"
+                 style="--role-color:var(--amber);--role-bg:var(--amber-dim);--role-border:rgba(255,179,0,.25)">
+              <div class="role-card-icon">🛡️</div>
+              <div class="role-card-name">Platform Admin</div>
+              <div class="role-card-tools">Unity Catalog · Clusters · IAM</div>
+              <span class="role-card-badge">Governance</span>
+            </div>
+
+            <div class="role-card" onclick="roleClick('data-analyst')"
+                 style="--role-color:var(--green);--role-bg:var(--green-dim);--role-border:rgba(0,200,83,.25)">
+              <div class="role-card-icon">📊</div>
+              <div class="role-card-name">Data Analyst</div>
+              <div class="role-card-tools">SQL Warehouses · AI/BI · Genie</div>
+              <span class="role-card-badge">Analytics</span>
+            </div>
+
+            <div class="role-card" onclick="roleClick('ml-engineer')"
+                 style="--role-color:var(--purple);--role-bg:var(--purple-dim);--role-border:rgba(156,111,255,.25)">
+              <div class="role-card-icon">🤖</div>
+              <div class="role-card-name">ML Engineer</div>
+              <div class="role-card-tools">Model Serving · Agent Bricks · APIs</div>
+              <span class="role-card-badge">LLMOps</span>
+              <span class="role-card-coming">Soon</span>
+            </div>
+
+          </div>
+        </div>
+        <!-- end roles section -->
 
         <!-- Navigation cards -->
         <div class="nav-cards" style="margin-bottom:var(--s8)">
@@ -3087,6 +3278,36 @@ function wnFormatDate(dateStr) {
 /* ── Boot ────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', wnLoad);
 if (document.readyState !== 'loading') wnLoad();
+
+
+
+/* ── ROLE CLICK — placeholder for future personalised paths ── */
+function roleClick(roleId) {
+  var ROLE_NAMES = {
+    'data-engineer': 'Data Engineer',
+    'data-scientist': 'Data Scientist',
+    'platform-admin': 'Platform Administrator',
+    'data-analyst': 'Data Analyst',
+    'ml-engineer': 'ML Engineer'
+  };
+  var name = ROLE_NAMES[roleId] || roleId;
+  /* Highlight the clicked card */
+  document.querySelectorAll('.role-card').forEach(function(c) {
+    c.style.opacity = c.onclick.toString().includes(roleId) ? '1' : '.5';
+  });
+  /* In the next phase this will filter content — for now show a toast */
+  if (typeof showToast === 'function') {
+    showToast('📍 ' + name + ' path — personalisation coming soon!', 'info');
+  } else {
+    /* Fallback: navigate to learning path as closest match */
+    nav('learning');
+  }
+  setTimeout(function() {
+    document.querySelectorAll('.role-card').forEach(function(c) {
+      c.style.opacity = '';
+    });
+  }, 1800);
+}
 
 
 </script>
