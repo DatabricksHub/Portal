@@ -1,0 +1,2003 @@
+<!DOCTYPE html>
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║   DATABRICKS KNOWLEDGE PORTAL                                    ║
+  ║   One-stop hub for Databricks architecture, resources,           ║
+  ║   learning paths, and curated official links.                    ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Databricks Knowledge Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ════════════════════════════════════════════════════════════
+       DESIGN SYSTEM
+    ════════════════════════════════════════════════════════════ */
+    [data-theme="dark"] {
+      --bg:#0b0f1a; --bg-soft:#111827; --bg-card:#1a2235;
+      --bg-card-hover:#1f2a40; --bg-code:#0d1117;
+      --border:#263047; --border-light:#2e3d5a;
+      --text:#e2e8f0; --text-muted:#8292a8; --text-faint:#4a5c72;
+      --shadow-card:0 4px 24px rgba(0,0,0,.40);
+      --shadow-lift:0 14px 44px rgba(0,0,0,.55);
+      --navbar-bg:rgba(11,15,26,.90); --menu-bg:rgba(11,15,26,.98);
+      --code-key:#ff7b72; --code-fn:#79c0ff;
+      --code-str:#a5d6ff; --code-num:#ffa657;
+      --code-comment:#6a7f99;
+    }
+    [data-theme="light"] {
+      --bg:#f4f6fb; --bg-soft:#eaecf4; --bg-card:#ffffff;
+      --bg-card-hover:#f8f9ff; --bg-code:#f0f2f8;
+      --border:#dde1ee; --border-light:#c8cedf;
+      --text:#1a2235; --text-muted:#566278; --text-faint:#8f99aa;
+      --shadow-card:0 2px 16px rgba(0,0,0,.08);
+      --shadow-lift:0 8px 32px rgba(0,0,0,.14);
+      --navbar-bg:rgba(244,246,251,.92); --menu-bg:rgba(244,246,251,.99);
+      --code-key:#d73a49; --code-fn:#0366d6;
+      --code-str:#032f62; --code-num:#e36209;
+      --code-comment:#6e8098;
+    }
+    :root {
+      --accent:#ff3621; --accent-dim:rgba(255,54,33,.12); --accent-glow:rgba(255,54,33,.28);
+      --cyan:#00bcd4; --cyan-dim:rgba(0,188,212,.10);
+      --green:#00c853; --green-dim:rgba(0,200,83,.10);
+      --amber:#ffb300; --amber-dim:rgba(255,179,0,.10);
+      --purple:#9c6fff; --purple-dim:rgba(156,111,255,.10);
+      --font-body:'Plus Jakarta Sans',sans-serif; --font-code:'Fira Code',monospace;
+      --xs:.72rem; --sm:.85rem; --base:1rem; --lg:1.125rem;
+      --xl:1.35rem; --2xl:1.75rem; --3xl:2.25rem;
+      --hero:clamp(2.4rem,5.5vw,4.2rem);
+      --s1:.25rem; --s2:.5rem; --s3:.75rem; --s4:1rem;
+      --s5:1.25rem; --s6:1.5rem; --s8:2rem; --s10:2.5rem;
+      --s12:3rem; --s16:4rem;
+      --r-sm:6px; --r-md:10px; --r-lg:16px; --r-xl:22px; --r-full:9999px;
+      --tf:all .18s ease; --tn:all .28s ease;
+      --navbar-h:62px; --max-w:1160px;
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{font-size:16px;scroll-behavior:smooth;}
+    body{font-family:var(--font-body);background:var(--bg);color:var(--text);
+      line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased;
+      transition:background .35s ease,color .35s ease;}
+    a{text-decoration:none;color:inherit;}
+    ul,ol{list-style:none;}
+    .container{max-width:var(--max-w);margin:0 auto;padding:0 var(--s8);}
+
+    /* ════════════════════════════════════════════════════════════
+       BLOCK 3 — NEW: SPA PAGE SYSTEM
+       ════════════════════════════════════════════════════════════
+       All pages live in the DOM at the same time.
+       Only the page with .active is shown.
+       display:none removes the page from layout entirely.
+       The pageEnter animation plays each time a page becomes active.
+    */
+    .page { display:none; min-height:calc(100vh - var(--navbar-h)); }
+    .page.active { display:block; animation:pageEnter .35s ease both; }
+    @keyframes pageEnter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+    /* ── Progress bar ── */
+    #scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;
+      background:linear-gradient(90deg,var(--accent),var(--cyan));
+      z-index:9999;transition:width .1s linear;pointer-events:none;}
+
+    /* ════════════════════════════════════════════════════════════
+       NAVBAR
+    ════════════════════════════════════════════════════════════ */
+    .navbar{position:sticky;top:0;z-index:100;height:var(--navbar-h);
+      background:var(--navbar-bg);backdrop-filter:blur(20px);
+      -webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);
+      display:flex;align-items:center;padding:0 var(--s8);gap:var(--s6);
+      transition:box-shadow .3s ease,background .35s ease;}
+    .navbar.scrolled{box-shadow:0 4px 30px rgba(0,0,0,.25);}
+    .navbar-brand{display:flex;align-items:center;gap:var(--s3);
+      font-weight:800;font-size:var(--lg);letter-spacing:-.02em;
+      flex-shrink:0;cursor:pointer;}
+    .brand-icon{width:30px;height:30px;background:var(--accent);border-radius:var(--r-sm);
+      display:flex;align-items:center;justify-content:center;
+      font-size:.85rem;font-weight:900;color:white;}
+    .brand-text span{color:var(--accent);}
+    /* SPA nav uses <button> elements — no href needed */
+    .navbar-links{display:flex;align-items:center;gap:var(--s1);flex:1;}
+    .navbar-links button{padding:var(--s2) var(--s4);border-radius:var(--r-sm);
+      font-size:var(--sm);font-weight:600;font-family:var(--font-body);
+      color:var(--text-muted);background:none;border:none;cursor:pointer;transition:var(--tf);}
+    .navbar-links button:hover{color:var(--text);background:var(--bg-card);}
+    .navbar-links button.active{color:var(--accent);background:var(--accent-dim);}
+    .navbar-controls{display:flex;align-items:center;gap:var(--s3);margin-left:auto;}
+    .theme-btn{width:36px;height:36px;border-radius:var(--r-full);
+      border:1px solid var(--border-light);background:var(--bg-card);
+      color:var(--text-muted);font-size:1rem;display:flex;align-items:center;
+      justify-content:center;cursor:pointer;transition:var(--tf);}
+    .theme-btn:hover{border-color:var(--accent);background:var(--accent-dim);
+      color:var(--accent);transform:rotate(20deg);}
+    .navbar-cta{padding:var(--s2) var(--s5);background:var(--accent);color:white;
+      font-family:var(--font-body);font-size:var(--sm);font-weight:700;
+      border:none;border-radius:var(--r-sm);cursor:pointer;transition:var(--tf);
+      text-decoration:none;white-space:nowrap;}
+    .navbar-cta:hover{background:#ff4d3a;transform:translateY(-1px);box-shadow:0 5px 16px var(--accent-glow);}
+    .hamburger{display:none;flex-direction:column;justify-content:center;
+      gap:5px;width:36px;height:36px;background:none;border:none;cursor:pointer;padding:4px;}
+    .hamburger-line{width:22px;height:2px;background:var(--text);
+      border-radius:2px;transition:var(--tn);transform-origin:center;}
+    .navbar.menu-open .hamburger-line:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .navbar.menu-open .hamburger-line:nth-child(2){opacity:0;transform:scaleX(0);}
+    .navbar.menu-open .hamburger-line:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+    .mobile-menu{position:fixed;top:var(--navbar-h);left:0;right:0;z-index:99;
+      background:var(--menu-bg);backdrop-filter:blur(24px);
+      border-bottom:1px solid var(--border);
+      padding:var(--s4);display:flex;flex-direction:column;gap:var(--s2);
+      transform:translateY(-110%);opacity:0;visibility:hidden;
+      transition:transform .32s cubic-bezier(.4,0,.2,1),opacity .32s ease,visibility .32s;}
+    .mobile-menu.open{transform:translateY(0);opacity:1;visibility:visible;}
+    .mobile-menu button{display:flex;align-items:center;padding:var(--s3) var(--s4);
+      border-radius:var(--r-md);font-size:var(--base);font-weight:600;
+      color:var(--text-muted);background:none;border:none;
+      cursor:pointer;transition:var(--tf);text-align:left;width:100%;font-family:var(--font-body);}
+    .mobile-menu button:hover,.mobile-menu button.active{background:var(--accent-dim);color:var(--accent);}
+    .mobile-divider{height:1px;background:var(--border);margin:var(--s2) 0;}
+
+    /* ════════════════════════════════════════════════════════════
+       SHARED SECTION / TYPOGRAPHY
+    ════════════════════════════════════════════════════════════ */
+    .page-pad{padding:var(--s16) 0;}
+    .sec-label{font-family:var(--font-code);font-size:var(--xs);color:var(--accent);
+      text-transform:uppercase;letter-spacing:.18em;font-weight:600;
+      margin-bottom:var(--s3);display:flex;align-items:center;gap:var(--s3);}
+    .sec-label::before{content:'';width:28px;height:2px;background:var(--accent);
+      border-radius:1px;flex-shrink:0;}
+    .sec-title{font-size:var(--2xl);font-weight:800;letter-spacing:-.03em;
+      margin-bottom:var(--s3);line-height:1.15;}
+    .sec-title .a{color:var(--accent);}
+    .sec-desc{color:var(--text-muted);font-size:var(--base);max-width:560px;
+      margin-bottom:var(--s8);line-height:1.75;}
+    .btn-primary{display:inline-flex;align-items:center;gap:var(--s2);
+      padding:var(--s4) var(--s8);background:var(--accent);color:white;
+      font-family:var(--font-body);font-size:var(--base);font-weight:700;
+      border:none;border-radius:var(--r-md);cursor:pointer;transition:var(--tn);text-decoration:none;}
+    .btn-primary:hover{background:#ff4d3a;transform:translateY(-2px);box-shadow:0 8px 26px var(--accent-glow);}
+    .btn-ghost{display:inline-flex;align-items:center;gap:var(--s2);
+      padding:var(--s4) var(--s8);background:var(--bg-card);color:var(--text);
+      font-family:var(--font-body);font-size:var(--base);font-weight:600;
+      border:1px solid var(--border-light);border-radius:var(--r-md);
+      cursor:pointer;transition:var(--tn);text-decoration:none;}
+    .btn-ghost:hover{border-color:var(--accent);background:var(--accent-dim);
+      color:var(--accent);transform:translateY(-2px);}
+
+    /* ════════════════════════════════════════════════════════════
+       HERO (home page)
+    ════════════════════════════════════════════════════════════ */
+    .hero{min-height:calc(100vh - var(--navbar-h));display:flex;
+      flex-direction:column;justify-content:center;align-items:center;
+      text-align:center;padding:var(--s16) var(--s8);position:relative;overflow:hidden;}
+    .hero::before{content:'';position:absolute;inset:0;
+      background-image:radial-gradient(circle,rgba(255,54,33,.16) 1px,transparent 1px);
+      background-size:36px 36px;pointer-events:none;
+      mask-image:radial-gradient(ellipse 75% 65% at 50% 50%,black 30%,transparent 100%);
+      -webkit-mask-image:radial-gradient(ellipse 75% 65% at 50% 50%,black 30%,transparent 100%);}
+    .hero::after{content:'';position:absolute;width:800px;height:450px;
+      top:50%;left:50%;transform:translate(-50%,-62%);
+      background:radial-gradient(ellipse,rgba(255,54,33,.09) 0%,transparent 65%);pointer-events:none;}
+    .hero>*{position:relative;z-index:1;}
+    .hero-badge{display:inline-flex;align-items:center;gap:var(--s2);
+      background:var(--accent-dim);border:1px solid rgba(255,54,33,.28);
+      color:var(--accent);font-size:var(--xs);font-weight:700;
+      font-family:var(--font-code);letter-spacing:.12em;text-transform:uppercase;
+      padding:var(--s2) var(--s5);border-radius:var(--r-full);
+      margin-bottom:var(--s6);animation:fadeUp .55s ease both;}
+    .hero-h{font-size:var(--hero);font-weight:800;line-height:1.05;
+      letter-spacing:-.04em;margin-bottom:var(--s5);
+      animation:fadeUp .55s ease .12s both;}
+    .hero-h .a{color:var(--accent);} .hero-h .c{color:var(--cyan);}
+    .hero-sub{font-size:var(--lg);color:var(--text-muted);max-width:580px;
+      margin-bottom:var(--s10);line-height:1.7;animation:fadeUp .55s ease .24s both;}
+    .hero-ctas{display:flex;gap:var(--s4);flex-wrap:wrap;justify-content:center;
+      margin-bottom:var(--s12);animation:fadeUp .55s ease .36s both;}
+    .hero-stats{display:flex;gap:var(--s10);flex-wrap:wrap;justify-content:center;
+      animation:fadeUp .55s ease .48s both;}
+    .sv{display:block;font-size:var(--2xl);font-weight:800;letter-spacing:-.04em;}
+    .sv.r{color:var(--accent);} .sv.c{color:var(--cyan);}
+    .sv.am{color:var(--amber);} .sv.g{color:var(--green);}
+    .sl{font-size:var(--xs);font-family:var(--font-code);color:var(--text-faint);
+      letter-spacing:.12em;text-transform:uppercase;margin-top:var(--s1);}
+    .nav-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+      gap:var(--s4);padding:var(--s10) 0 var(--s16);}
+    .nav-card{background:var(--bg-card);border:1px solid var(--border);
+      border-radius:var(--r-lg);padding:var(--s6);cursor:pointer;
+      transition:var(--tn);text-align:center;}
+    .nav-card:hover{border-color:var(--border-light);transform:translateY(-4px);
+      box-shadow:var(--shadow-lift);}
+    .nav-card-icon{font-size:2rem;margin-bottom:var(--s3);}
+    .nav-card-title{font-weight:700;font-size:var(--base);margin-bottom:var(--s2);}
+    .nav-card-desc{font-size:var(--xs);color:var(--text-faint);}
+
+    /* ════════════════════════════════════════════════════════════
+       BLOCK 3 — PATTERN 2: TABS COMPONENT
+       ════════════════════════════════════════════════════════════
+       The sliding ink bar is the key visual detail:
+       It's one absolutely-positioned <div> whose left and width
+       are set by JavaScript to match the active tab button.
+       CSS transition animates the movement smoothly.
+    */
+    .tab-group{margin-bottom:var(--s10);}
+    .tab-nav{display:flex;border-bottom:1px solid var(--border);
+      margin-bottom:var(--s8);position:relative;gap:0;overflow-x:auto;}
+    /* The sliding underline bar */
+    .tab-ink{position:absolute;bottom:-1px;height:2px;background:var(--accent);
+      border-radius:1px;
+      /* JS sets left: and width: — CSS transition does the animation */
+      transition:left .3s cubic-bezier(.4,0,.2,1),width .3s cubic-bezier(.4,0,.2,1);}
+    .tab-btn{padding:var(--s3) var(--s5);background:none;border:none;
+      font-family:var(--font-body);font-size:var(--sm);font-weight:600;
+      color:var(--text-muted);cursor:pointer;transition:color .2s;
+      white-space:nowrap;position:relative;}
+    .tab-btn:hover{color:var(--text);}
+    .tab-btn.active{color:var(--accent);}
+    .tab-panel{display:none;animation:fadeUp .3s ease both;}
+    .tab-panel.active{display:block;}
+
+    /* ════════════════════════════════════════════════════════════
+       BLOCK 3 — PATTERN 3: ACCORDION COMPONENT
+       ════════════════════════════════════════════════════════════
+       The max-height trick:
+       CSS can't animate height:0 → height:auto.
+       Solution: animate max-height:0 → max-height:800px instead.
+       The content stops growing at its natural height.
+       overflow:hidden clips content during the animation.
+    */
+    .accordion{display:flex;flex-direction:column;gap:var(--s3);}
+    .accordion-item{background:var(--bg-card);border:1px solid var(--border);
+      border-radius:var(--r-lg);overflow:hidden;transition:border-color .2s;}
+    .accordion-item.open{border-color:var(--border-light);}
+    .acc-trigger{display:flex;align-items:center;justify-content:space-between;
+      padding:var(--s5) var(--s6);background:none;border:none;width:100%;
+      font-family:var(--font-body);font-size:var(--base);font-weight:700;
+      color:var(--text);cursor:pointer;text-align:left;gap:var(--s4);transition:var(--tf);}
+    .acc-trigger:hover{color:var(--accent);}
+    .acc-left{display:flex;align-items:center;gap:var(--s4);}
+    .acc-icon{width:38px;height:38px;border-radius:var(--r-md);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.1rem;flex-shrink:0;background:var(--bg-soft);}
+    .acc-title{font-size:var(--base);font-weight:700;}
+    .acc-sub{font-size:var(--xs);color:var(--text-faint);margin-top:2px;}
+    .acc-chevron{flex-shrink:0;font-size:.75rem;color:var(--text-faint);
+      transition:transform .35s cubic-bezier(.4,0,.2,1);}
+    /* Arrow flips when open */
+    .accordion-item.open .acc-chevron{transform:rotate(180deg);}
+    /* The collapsible body */
+    .acc-body{max-height:0;overflow:hidden;
+      transition:max-height .4s cubic-bezier(.4,0,.2,1);}
+    .accordion-item.open .acc-body{max-height:900px;}
+    .acc-inner{padding:0 var(--s6) var(--s6);
+      border-top:1px solid var(--border);padding-top:var(--s5);}
+    .acc-inner p{font-size:var(--sm);color:var(--text-muted);line-height:1.75;margin-bottom:var(--s4);}
+    .acc-inner p strong{color:var(--text);}
+    .acc-link{display:inline-flex;align-items:center;gap:var(--s2);
+      font-size:var(--sm);font-weight:700;color:var(--accent);
+      margin-top:var(--s4);transition:gap .18s ease;}
+    .acc-link:hover{gap:var(--s3);}
+
+    /* Chips */
+    .chips{display:flex;flex-wrap:wrap;gap:var(--s2);margin:var(--s4) 0;}
+    .chip{padding:var(--s1) var(--s3);border-radius:var(--r-full);
+      font-family:var(--font-code);font-size:var(--xs);font-weight:600;
+      background:var(--bg-soft);color:var(--text-muted);border:1px solid var(--border);transition:var(--tf);}
+    .chip.r{background:var(--accent-dim);color:var(--accent);border-color:rgba(255,54,33,.25);}
+    .chip.c{background:var(--cyan-dim);color:var(--cyan);border-color:rgba(0,188,212,.25);}
+    .chip.am{background:var(--amber-dim);color:var(--amber);border-color:rgba(255,179,0,.25);}
+    .chip.g{background:var(--green-dim);color:var(--green);border-color:rgba(0,200,83,.25);}
+    .chip.pu{background:var(--purple-dim);color:var(--purple);border-color:rgba(156,111,255,.25);}
+
+    /* ════════════════════════════════════════════════════════════
+       CODE BLOCKS
+    ════════════════════════════════════════════════════════════ */
+    .code-wrap{background:var(--bg-code);border:1px solid var(--border);
+      border-radius:var(--r-lg);overflow:hidden;margin:var(--s4) 0;}
+    .code-header{display:flex;align-items:center;justify-content:space-between;
+      padding:var(--s3) var(--s5);background:var(--bg-soft);border-bottom:1px solid var(--border);}
+    .code-title{font-family:var(--font-code);font-size:var(--xs);color:var(--text-muted);font-weight:600;}
+    .code-lang{font-family:var(--font-code);font-size:.65rem;font-weight:700;
+      padding:2px 8px;border-radius:4px;background:var(--cyan-dim);color:var(--cyan);
+      border:1px solid rgba(0,188,212,.2);text-transform:uppercase;}
+    .copy-btn{display:flex;align-items:center;gap:var(--s2);padding:var(--s1) var(--s3);
+      background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-sm);
+      font-family:var(--font-code);font-size:var(--xs);font-weight:600;
+      color:var(--text-muted);cursor:pointer;transition:var(--tf);}
+    .copy-btn:hover{border-color:var(--border-light);color:var(--text);}
+    .copy-btn.copied{color:var(--green);border-color:rgba(0,200,83,.3);}
+    .code-body{padding:var(--s5) var(--s6);overflow-x:auto;}
+    pre{font-family:var(--font-code);font-size:.82rem;line-height:1.85;color:var(--text);tab-size:2;}
+    .ck{color:var(--code-key);} .cf{color:var(--code-fn);}
+    .cs{color:var(--code-str);} .cn{color:var(--code-num);}
+    .cc{color:var(--code-comment);font-style:italic;}
+
+    /* ════════════════════════════════════════════════════════════
+       BLOCK 3 — PATTERN 4: SEARCH + FILTER
+       ════════════════════════════════════════════════════════════
+       Search bar reads input value.
+       Filter pills read data-filter attribute.
+       Each card has data-category and data-tags.
+       JS checks both, sets .hidden on non-matching cards.
+    */
+    .search-bar{display:flex;align-items:center;gap:var(--s3);
+      background:var(--bg-card);border:1px solid var(--border);
+      border-radius:var(--r-lg);padding:var(--s3) var(--s5);
+      margin-bottom:var(--s5);transition:border-color .2s;max-width:480px;}
+    .search-bar:focus-within{border-color:var(--accent);}
+    .search-bar input{flex:1;background:none;border:none;outline:none;
+      font-family:var(--font-body);font-size:var(--base);color:var(--text);}
+    .search-bar input::placeholder{color:var(--text-faint);}
+    .search-clear{background:none;border:none;color:var(--text-faint);
+      cursor:pointer;font-size:1rem;transition:var(--tf);padding:0;display:none;}
+    .search-clear.vis{display:block;}
+    .search-clear:hover{color:var(--text);}
+    .filter-bar{display:flex;gap:var(--s2);flex-wrap:wrap;margin-bottom:var(--s8);}
+    .filter-pill{padding:var(--s2) var(--s4);background:var(--bg-card);
+      border:1px solid var(--border);border-radius:var(--r-full);
+      font-size:var(--xs);font-weight:700;font-family:var(--font-code);
+      text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);
+      cursor:pointer;transition:var(--tf);}
+    .filter-pill:hover{border-color:var(--border-light);color:var(--text);}
+    .filter-pill.active{background:var(--accent-dim);
+      border-color:rgba(255,54,33,.35);color:var(--accent);}
+    .result-count{font-size:var(--xs);font-family:var(--font-code);
+      color:var(--text-faint);margin-bottom:var(--s5);}
+    .result-count span{color:var(--accent);font-weight:700;}
+    .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--s5);}
+    .rcard{background:var(--bg-card);border:1px solid var(--border);
+      border-radius:var(--r-lg);padding:var(--s6);
+      display:flex;flex-direction:column;gap:var(--s4);transition:var(--tn);}
+    .rcard:hover{background:var(--bg-card-hover);border-color:var(--border-light);
+      transform:translateY(-4px);box-shadow:var(--shadow-lift);}
+    .rcard.hidden{display:none;}
+    .cicon{width:46px;height:46px;border-radius:var(--r-md);
+      display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+    .cicon.r{background:var(--accent-dim);} .cicon.c{background:var(--cyan-dim);}
+    .cicon.am{background:var(--amber-dim);} .cicon.g{background:var(--green-dim);}
+    .cicon.pu{background:var(--purple-dim);}
+    .ccat{font-family:var(--font-code);font-size:var(--xs);color:var(--text-faint);
+      text-transform:uppercase;letter-spacing:.1em;}
+    .ctitle{font-size:var(--xl);font-weight:700;letter-spacing:-.02em;}
+    .cdesc{font-size:var(--sm);color:var(--text-muted);line-height:1.7;flex:1;}
+    .ctags{display:flex;flex-wrap:wrap;gap:var(--s2);}
+    .tag{padding:var(--s1) var(--s3);background:var(--bg);border:1px solid var(--border);
+      border-radius:var(--r-full);font-size:var(--xs);font-weight:600;
+      color:var(--text-faint);font-family:var(--font-code);}
+    .clinks{display:flex;flex-direction:column;gap:var(--s2);
+      padding-top:var(--s4);border-top:1px solid var(--border);}
+    .clink{display:flex;align-items:center;gap:var(--s2);
+      font-size:var(--sm);font-weight:600;color:var(--text-muted);
+      transition:var(--tf);padding:var(--s2) var(--s3);border-radius:var(--r-sm);}
+    .clink:hover{color:var(--accent);background:var(--accent-dim);}
+    .clink-arr{margin-left:auto;font-size:.75rem;transition:transform .18s;}
+    .clink:hover .clink-arr{transform:translateX(3px);}
+    .empty-state{display:none;text-align:center;padding:var(--s16) var(--s8);grid-column:1/-1;}
+    .empty-state.vis{display:block;}
+    .empty-icon{font-size:3rem;margin-bottom:var(--s4);opacity:.5;}
+    .empty-title{font-size:var(--xl);font-weight:700;margin-bottom:var(--s3);}
+    .empty-text{color:var(--text-muted);font-size:var(--sm);margin-bottom:var(--s6);}
+
+    /* ════════════════════════════════════════════════════════════
+       ARCHITECTURE PAGE extras
+    ════════════════════════════════════════════════════════════ */
+    .arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s10);
+      align-items:start;margin-bottom:var(--s10);}
+    .arch-body p{font-size:var(--base);color:var(--text-muted);line-height:1.8;margin-bottom:var(--s5);}
+    .arch-body p strong{color:var(--text);}
+    .arch-body a{color:var(--accent);border-bottom:1px solid var(--accent-dim);transition:var(--tf);}
+    .arch-body a:hover{border-bottom-color:var(--accent);}
+    .arch-visual{background:var(--bg-card);border:1px solid var(--border);
+      border-radius:var(--r-xl);padding:var(--s6);display:flex;flex-direction:column;gap:var(--s3);}
+    .arch-visual-lbl{font-family:var(--font-code);font-size:var(--xs);color:var(--text-faint);
+      text-transform:uppercase;letter-spacing:.12em;margin-bottom:var(--s2);}
+    .alayer{border-radius:var(--r-md);padding:var(--s4) var(--s5);}
+    .alayer-name{font-weight:700;font-size:var(--sm);margin-bottom:var(--s2);}
+    .alayer-chips{display:flex;flex-wrap:wrap;gap:var(--s2);}
+    .alayer-chip{font-family:var(--font-code);font-size:.65rem;padding:2px 8px;
+      border-radius:4px;background:rgba(0,0,0,.25);color:inherit;
+      border:1px solid rgba(255,255,255,.1);}
+    .alayer.l1{background:rgba(255,54,33,.10);border:1px solid rgba(255,54,33,.2);color:#ff7b72;}
+    .alayer.l2{background:rgba(0,188,212,.08);border:1px solid rgba(0,188,212,.2);color:var(--cyan);}
+    .alayer.l3{background:rgba(156,111,255,.08);border:1px solid rgba(156,111,255,.2);color:var(--purple);}
+    .alayer.l4{background:rgba(255,179,0,.08);border:1px solid rgba(255,179,0,.2);color:var(--amber);}
+    .alayer.l5{background:rgba(0,200,83,.08);border:1px solid rgba(0,200,83,.2);color:var(--green);}
+    .alayer-arrow{text-align:center;color:var(--border-light);font-size:1.1rem;line-height:1;}
+
+    /* ════════════════════════════════════════════════════════════
+       BLOCK 3 — PATTERN 5: TOAST NOTIFICATION
+       ════════════════════════════════════════════════════════════
+       Starts off-screen below (translateY > 100%).
+       JS adds .show → slides up into view.
+       setTimeout removes .show after 2.8s.
+    */
+    .toast{position:fixed;bottom:var(--s8);right:var(--s8);z-index:9999;
+      background:var(--bg-card);border:1px solid var(--border-light);
+      border-radius:var(--r-lg);padding:var(--s4) var(--s5);
+      display:flex;align-items:center;gap:var(--s3);
+      box-shadow:var(--shadow-lift);min-width:200px;max-width:360px;
+      transform:translateY(calc(100% + var(--s8)));opacity:0;
+      transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .35s ease;
+      pointer-events:none;}
+    .toast.show{transform:translateY(0);opacity:1;pointer-events:auto;}
+    .toast-icon{font-size:1.1rem;flex-shrink:0;}
+    .toast-msg{font-size:var(--sm);font-weight:600;}
+    .toast-msg.success{color:var(--green);} .toast-msg.info{color:var(--cyan);}
+    .toast-msg.warn{color:var(--amber);} .toast-msg.err{color:var(--accent);}
+
+    /* ════════════════════════════════════════════════════════════
+       FOOTER
+    ════════════════════════════════════════════════════════════ */
+    .footer{background:var(--bg-soft);border-top:1px solid var(--border);
+      padding:var(--s12) 0 var(--s8);transition:background .35s ease;}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+      gap:var(--s12);margin-bottom:var(--s10);}
+    .footer-brand{display:flex;align-items:center;gap:var(--s3);
+      font-weight:800;font-size:var(--lg);margin-bottom:var(--s4);}
+    .fbicon{width:26px;height:26px;background:var(--accent);border-radius:var(--r-sm);
+      display:flex;align-items:center;justify-content:center;
+      font-size:.8rem;color:white;font-weight:900;}
+    .footer-desc{font-size:var(--sm);color:var(--text-muted);line-height:1.7;max-width:280px;}
+    .footer-col-title{font-size:var(--sm);font-weight:700;margin-bottom:var(--s5);}
+    .flinks{display:flex;flex-direction:column;gap:var(--s3);}
+    .flinks a,.flinks button{font-size:var(--sm);color:var(--text-muted);transition:var(--tf);
+      background:none;border:none;cursor:pointer;font-family:var(--font-body);text-align:left;padding:0;}
+    .flinks a:hover,.flinks button:hover{color:var(--accent);}
+    .footer-bottom{padding-top:var(--s6);border-top:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+      flex-wrap:wrap;gap:var(--s4);font-size:var(--xs);color:var(--text-faint);}
+    .fcode{font-family:var(--font-code);}
+
+    /* ════════════════════════════════════════════════════════════
+       ANIMATIONS & RESPONSIVE
+    ════════════════════════════════════════════════════════════ */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+    @media(max-width:1024px){
+      .arch-grid{grid-template-columns:1fr;}
+      .footer-grid{grid-template-columns:1fr 1fr;gap:var(--s8);}
+    }
+    @media(max-width:768px){
+      .navbar-links{display:none;} .hamburger{display:flex;} .navbar-cta{display:none;}
+      .footer-grid{grid-template-columns:1fr;}
+      .page-pad{padding:var(--s10) 0;}
+      .hero{padding:var(--s10) var(--s4);}
+      .footer{padding:var(--s8) 0 var(--s6);}
+      .toast{bottom:var(--s4);right:var(--s4);left:var(--s4);}
+    }
+    @media(max-width:480px){
+      .hero-ctas{flex-direction:column;align-items:stretch;}
+      .hero-stats{gap:var(--s6);}
+      .nav-cards{grid-template-columns:repeat(2,1fr);}
+    }
+  </style>
+</head>
+<body>
+
+<div id="scroll-progress"></div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     NAVBAR
+══════════════════════════════════════════════════════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="navbar-brand" onclick="nav('home')" role="link" tabindex="0" aria-label="Home">
+    <div class="brand-icon">▲</div>
+    <span class="brand-text">Data<span>bricks</span> Hub</span>
+  </div>
+  <ul class="navbar-links" id="nav-links">
+    <!-- data-page="x" → JS reads this to call nav('x') -->
+    <li><button data-page="home"         class="active">Home</button></li>
+    <li><button data-page="architecture">Architecture</button></li>
+    <li><button data-page="resources">Resources</button></li>
+    <li><button data-page="learning">Learning Path</button></li>
+    <li><button data-page="about">About</button></li>
+  </ul>
+  <div class="navbar-controls">
+    <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">🌙</button>
+    <a class="navbar-cta" href="https://www.databricks.com/try-databricks" target="_blank" rel="noopener">Try Free →</a>
+    <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <button data-page="home"         onclick="closeMobileMenu()">🏠 Home</button>
+  <button data-page="architecture" onclick="closeMobileMenu()">🏛️ Architecture</button>
+  <button data-page="resources"    onclick="closeMobileMenu()">🔗 Resources</button>
+  <button data-page="learning"     onclick="closeMobileMenu()">📚 Learning Path</button>
+  <button data-page="about"        onclick="closeMobileMenu()">ℹ️ About</button>
+  <div class="mobile-divider"></div>
+  <button onclick="window.open('https://docs.databricks.com','_blank');closeMobileMenu()">📖 Official Docs ↗</button>
+  <button onclick="window.open('https://community.cloud.databricks.com','_blank');closeMobileMenu()">🚀 Try Free ↗</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE: HOME
+══════════════════════════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-badge">▲ Your One-Stop Databricks Knowledge Hub</div>
+    <h1 class="hero-h">The <span class="a">Databricks</span><br><span class="c">Lakehouse</span> Platform</h1>
+    <p class="hero-sub">Everything you need to learn, build, and master Databricks — official docs, architecture deep-dives, learning paths, and curated resources, all in one place.</p>
+    <div class="hero-ctas">
+      <a class="btn-primary" href="https://www.databricks.com/try-databricks" target="_blank" rel="noopener">🚀 Try Free</a>
+      <button class="btn-ghost" onclick="nav('architecture')">Explore Architecture →</button>
+    </div>
+    <div class="hero-stats">
+      <div><span class="sv r">10,000+</span><span class="sl">Customers</span></div>
+      <div><span class="sv c">3 Clouds</span><span class="sl">AWS · Azure · GCP</span></div>
+      <div><span class="sv am">2013</span><span class="sl">Founded</span></div>
+      <div><span class="sv g">Open Source</span><span class="sl">Spark + Delta + MLflow</span></div>
+    </div>
+  </section>
+  <div class="container">
+    <div class="nav-cards">
+      <div class="nav-card" onclick="nav('architecture')">
+        <div class="nav-card-icon">🏛️</div>
+        <div class="nav-card-title">Architecture</div>
+        <div class="nav-card-desc">Two-plane model, Spark, Delta Lake</div>
+      </div>
+      <div class="nav-card" onclick="nav('resources')">
+        <div class="nav-card-icon">🔗</div>
+        <div class="nav-card-title">Resources</div>
+        <div class="nav-card-desc">Search official docs & links</div>
+      </div>
+      <div class="nav-card" onclick="nav('learning')">
+        <div class="nav-card-icon">📚</div>
+        <div class="nav-card-title">Learning Path</div>
+        <div class="nav-card-desc">Beginner to certified</div>
+      </div>
+      <div class="nav-card" onclick="nav('about')">
+        <div class="nav-card-icon">ℹ️</div>
+        <div class="nav-card-title">About This Portal</div>
+        <div class="nav-card-desc">Architecture, resources, learning paths &amp; more</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE: ARCHITECTURE — tabs + accordion
+══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-architecture">
+  <div class="container">
+    <div class="page-pad">
+
+      <div class="sec-label">Technical Deep Dive</div>
+      <h2 class="sec-title">Platform <span class="a">Architecture</span></h2>
+      <p class="sec-desc">Click the tabs to explore each layer. Expand any accordion row for detail, code examples, and official links.</p>
+
+      <div class="arch-grid">
+        <div class="arch-body">
+          <p>Databricks uses a <strong>two-plane architecture</strong> that separates orchestration from computation. The <a href="https://docs.databricks.com/en/security/network/classic/index.html" target="_blank" rel="noopener">Control Plane</a> is Databricks-managed. The <strong>Data Plane</strong> runs entirely inside your cloud account — your data never leaves your VPC.</p>
+          <p>All compute (Spark clusters) runs in the Data Plane on VMs you own. The Control Plane only sends orchestration signals — cluster commands, job triggers — never touching the data being processed.</p>
+          <p>Storage sits below compute in object storage (S3/ADLS/GCS), with <a href="https://docs.delta.io" target="_blank" rel="noopener">Delta Lake</a> adding ACID transactions, versioning, and schema management on top of Parquet files.</p>
+        </div>
+        <div class="arch-visual">
+          <div class="arch-visual-lbl">Platform Stack — top to bottom</div>
+          <div class="alayer l1">
+            <div class="alayer-name">① Control Plane (Databricks-managed)</div>
+            <div class="alayer-chips"><span class="alayer-chip">Web UI</span><span class="alayer-chip">Cluster Mgr</span><span class="alayer-chip">Job Scheduler</span><span class="alayer-chip">Unity Catalog</span></div>
+          </div>
+          <div class="alayer-arrow">⇅</div>
+          <div class="alayer l2">
+            <div class="alayer-name">② Compute — Spark Clusters (your cloud)</div>
+            <div class="alayer-chips"><span class="alayer-chip">Driver Node</span><span class="alayer-chip">Workers</span><span class="alayer-chip">Photon</span><span class="alayer-chip">Auto-scaling</span></div>
+          </div>
+          <div class="alayer-arrow">⇅</div>
+          <div class="alayer l3">
+            <div class="alayer-name">③ Apache Spark Engine</div>
+            <div class="alayer-chips"><span class="alayer-chip">Catalyst Optimizer</span><span class="alayer-chip">DAG Scheduler</span><span class="alayer-chip">Spark SQL</span></div>
+          </div>
+          <div class="alayer-arrow">⇅</div>
+          <div class="alayer l4">
+            <div class="alayer-name">④ Delta Lake + Object Storage</div>
+            <div class="alayer-chips"><span class="alayer-chip">S3/ADLS/GCS</span><span class="alayer-chip">Delta Log</span><span class="alayer-chip">Parquet</span><span class="alayer-chip">Z-Order</span></div>
+          </div>
+          <div class="alayer-arrow">⇅</div>
+          <div class="alayer l5">
+            <div class="alayer-name">⑤ Unity Catalog — Governance</div>
+            <div class="alayer-chips"><span class="alayer-chip">Access Control</span><span class="alayer-chip">Lineage</span><span class="alayer-chip">Audit Logs</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TABS ── -->
+      <div class="tab-group" id="arch-tabs">
+        <div class="tab-nav" id="arch-tab-nav">
+          <button class="tab-btn active" data-tab="clusters">Clusters &amp; Compute</button>
+          <button class="tab-btn" data-tab="delta">Delta Lake</button>
+          <button class="tab-btn" data-tab="medallion">Medallion Architecture</button>
+          <button class="tab-btn" data-tab="unity">Unity Catalog</button>
+          <div class="tab-ink" id="arch-ink"></div>
+        </div>
+
+        <!-- TAB: Clusters -->
+        <div class="tab-panel active" id="tab-clusters">
+          <div class="accordion">
+            <div class="accordion-item open">
+              <button class="acc-trigger" aria-expanded="true">
+                <div class="acc-left"><div class="acc-icon">🖥️</div><div><div class="acc-title">All-Purpose Clusters</div><div class="acc-sub">Interactive notebooks &amp; shared development</div></div></div>
+                <span class="acc-chevron">▼</span>
+              </button>
+              <div class="acc-body"><div class="acc-inner">
+                <p>All-Purpose clusters are long-running, interactive clusters for notebook development and ad-hoc analysis. Multiple users can share one cluster. They are <strong>more expensive</strong> than Job clusters — always set auto-termination (30–60 min idle).</p>
+                <div class="chips"><span class="chip c">Interactive notebooks</span><span class="chip am">Multi-user sharing</span><span class="chip r">Set auto-termination</span></div>
+                <a class="acc-link" href="https://docs.databricks.com/en/compute/configure.html" target="_blank" rel="noopener">Configure clusters →</a>
+              </div></div>
+            </div>
+            <div class="accordion-item">
+              <button class="acc-trigger" aria-expanded="false">
+                <div class="acc-left"><div class="acc-icon">⚙️</div><div><div class="acc-title">Job Clusters</div><div class="acc-sub">Ephemeral clusters for production pipeline runs</div></div></div>
+                <span class="acc-chevron">▼</span>
+              </button>
+              <div class="acc-body"><div class="acc-inner">
+                <p>Job clusters are created when a job starts and terminated when it completes. <strong>Most cost-efficient</strong> for production: you only pay for the job duration. Each run is isolated — no state leaks between runs.</p>
+                <div class="chips"><span class="chip g">Auto-terminated on finish</span><span class="chip c">Isolated per run</span><span class="chip am">Most cost-efficient</span></div>
+                <a class="acc-link" href="https://docs.databricks.com/en/jobs/index.html" target="_blank" rel="noopener">Databricks Jobs docs →</a>
+              </div></div>
+            </div>
+            <div class="accordion-item">
+              <button class="acc-trigger" aria-expanded="false">
+                <div class="acc-left"><div class="acc-icon">📊</div><div><div class="acc-title">SQL Warehouses</div><div class="acc-sub">Optimised compute for SQL analytics &amp; BI tools</div></div></div>
+                <span class="acc-chevron">▼</span>
+              </button>
+              <div class="acc-body"><div class="acc-inner">
+                <p>SQL Warehouses are specialised compute optimised for SQL and BI connectors. They use the <strong>Photon engine</strong> for vectorised execution and support serverless mode. Connect Power BI, Tableau, or Looker via JDBC/ODBC.</p>
+                <div class="chips"><span class="chip r">Photon-accelerated</span><span class="chip c">Serverless option</span><span class="chip pu">BI connectors JDBC/ODBC</span></div>
+                <a class="acc-link" href="https://docs.databricks.com/en/compute/sql-warehouse/index.html" target="_blank" rel="noopener">SQL Warehouses docs →</a>
+              </div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Delta Lake -->
+        <div class="tab-panel" id="tab-delta">
+          <div class="accordion">
+            <div class="accordion-item open">
+              <button class="acc-trigger" aria-expanded="true">
+                <div class="acc-left"><div class="acc-icon">🔐</div><div><div class="acc-title">ACID Transactions &amp; MERGE</div><div class="acc-sub">Atomic writes — never a corrupt table</div></div></div>
+                <span class="acc-chevron">▼</span>
+              </button>
+              <div class="acc-body"><div class="acc-inner">
+                <p>Delta Lake adds ACID transactions to object storage. If a write fails midway, the partial write is rolled back automatically. MERGE is the most powerful Delta command — upserts, deletes, and inserts in one atomic operation.</p>
+                <div class="code-wrap">
+                  <div class="code-header"><span class="code-title">MERGE — atomic upsert</span><div style="display:flex;gap:var(--s2);align-items:center"><span class="code-lang">SQL</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div></div>
+                  <div class="code-body"><pre><span class="ck">MERGE INTO</span> silver.customers <span class="ck">AS</span> tgt
+<span class="ck">USING</span> incoming <span class="ck">AS</span> src
+  <span class="ck">ON</span> tgt.customer_id = src.customer_id
+<span class="ck">WHEN MATCHED THEN UPDATE SET</span>
+    tgt.email = src.email,
+    tgt.updated_at = src.updated_at
+<span class="ck">WHEN NOT MATCHED THEN INSERT</span> *
+<span class="ck">WHEN NOT MATCHED BY SOURCE THEN DELETE</span>;</pre></div>
+                </div>
+                <a class="acc-link" href="https://docs.delta.io/latest/delta-update.html" target="_blank" rel="noopener">Delta updates &amp; deletes →</a>
+              </div></div>
+            </div>
+            <div class="accordion-item">
+              <button class="acc-trigger" aria-expanded="false">
+                <div class="acc-left"><div class="acc-icon">⏳</div><div><div class="acc-title">Time Travel</div><div class="acc-sub">Query, restore, and audit historical table versions</div></div></div>
+                <span class="acc-chevron">▼</span>
+              </button>
+              <div class="acc-body"><div class="acc-inner">
+                <p>Every write creates a new version in the transaction log. Query any historical version for auditing, reproducing ML experiments, or recovering from accidental deletes. Default retention is 30 days.</p>
+                <div class="code-wrap">
+                  <div class="code-header"><span class="code-title">Time Travel queries</span><div style="display:flex;gap:var(--s2);align-items:center"><span class="code-lang">SQL</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div></div>
+                  <div class="code-body"><pre><span class="cc">-- Query as of a specific date</span>
+<span class="ck">SELECT</span> * <span class="ck">FROM</span> silver.customers
+<span class="ck">TIMESTAMP AS OF</span> <span class="cs">'2024-01-15'</span>;
+
+<span class="cc">-- Query a specific version number</span>
+<span class="ck">SELECT</span> * <span class="ck">FROM</span> silver.customers
+<span class="ck">VERSION AS OF</span> <span class="cn">5</span>;
+
+<span class="cc">-- View full history</span>
+<span class="ck">DESCRIBE HISTORY</span> silver.customers;
+
+<span class="cc">-- Restore to previous version</span>
+<span class="ck">RESTORE TABLE</span> silver.customers
+<span class="ck">TO VERSION AS OF</span> <span class="cn">3</span>;</pre></div>
+                </div>
+                <a class="acc-link" href="https://docs.delta.io/latest/delta-utility.html#history" target="_blank" rel="noopener">Delta time travel docs →</a>
+              </div></div>
+            </div>
+            <div class="accordion-item">
+              <button class="acc-trigger" aria-expanded="false">
+                <div class="acc-left"><div class="acc-icon">⚡</div><div><div class="acc-title">OPTIMIZE &amp; Z-Order</div><div class="acc-sub">Compact small files, co-locate related data</div></div></div>
+                <span class="acc-chevron">▼</span>
+              </button>
+              <div class="acc-body"><div class="acc-inner">
+                <p>Streaming pipelines produce many small files that hurt read performance. <strong>OPTIMIZE</strong> compacts them. <strong>Z-ORDER BY</strong> co-locates related rows so filters on those columns can skip entire files (data skipping).</p>
+                <div class="code-wrap">
+                  <div class="code-header"><span class="code-title">OPTIMIZE and VACUUM</span><div style="display:flex;gap:var(--s2);align-items:center"><span class="code-lang">SQL</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div></div>
+                  <div class="code-body"><pre><span class="cc">-- Compact + co-locate by customer_id &amp; date</span>
+<span class="ck">OPTIMIZE</span> silver.orders
+<span class="ck">ZORDER BY</span> (customer_id, order_date);
+
+<span class="cc">-- Remove old files (keep 7 days for time travel)</span>
+<span class="ck">VACUUM</span> silver.orders <span class="ck">RETAIN</span> <span class="cn">168</span> <span class="ck">HOURS</span>;
+
+<span class="cc">-- Enable auto-optimize on write</span>
+<span class="ck">ALTER TABLE</span> silver.orders
+<span class="ck">SET TBLPROPERTIES</span> (
+  <span class="cs">'delta.autoOptimize.optimizeWrite'</span> = <span class="cs">'true'</span>,
+  <span class="cs">'delta.autoOptimize.autoCompact'</span>   = <span class="cs">'true'</span>
+);</pre></div>
+                </div>
+              </div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Medallion -->
+        <div class="tab-panel" id="tab-medallion">
+          <p style="font-size:var(--base);color:var(--text-muted);line-height:1.8;margin-bottom:var(--s6)">The Medallion Architecture organises data into three progressive quality layers. Data only flows forward. Each layer serves a different audience and purpose.</p>
+          <div class="accordion">
+            <div class="accordion-item open">
+              <button class="acc-trigger" aria-expanded="true">
+                <div class="acc-left"><div class="acc-icon">🥉</div><div><div class="acc-title">Bronze — Raw Ingestion</div><div class="acc-sub">Data exactly as received from the source</div></div></div>
+                <span class="acc-chevron">▼</span>
+              </button>
+              <div class="acc-body"><div class="acc-inner">
+                <p>Bronze is the landing zone. <strong>No transformations, no cleaning.</strong> Use <a href="https://docs.databricks.com/en/ingestion/cloud-object-storage/auto-loader/index.html" target="_blank" rel="noopener" style="color:var(--accent)">Auto Loader</a> (cloudFiles) for incremental ingestion — it checkpoints which files have been processed. Add metadata columns: <code style="font-family:var(--font-code);font-size:.85em">_ingested_at</code>, <code style="font-family:var(--font-code);font-size:.85em">_source_file</code>.</p>
+                <div class="chips"><span class="chip r">Raw, unmodified data</span><span class="chip c">Auto Loader (cloudFiles)</span><span class="chip am">Add ingestion metadata</span><span class="chip g">Append-only writes</span></div>
+              </div></div>
+            </div>
+            <div class="accordion-item">
+              <button class="acc-trigger" aria-expanded="false">
+                <div class="acc-left"><div class="acc-icon">🥈</div><div><div class="acc-title">Silver — Cleaned &amp; Validated</div><div class="acc-sub">Deduplicated, typed, schema-enforced</div></div></div>
+                <span class="acc-chevron">▼</span>
+              </button>
+              <div class="acc-body"><div class="acc-inner">
+                <p>Silver applies data quality rules — remove duplicates, cast types, parse dates. Use DLT <code style="font-family:var(--font-code);font-size:.85em">@expect</code> decorators to declare quality constraints. Silver is the layer used by <strong>data scientists and SQL analysts</strong>.</p>
+                <div class="chips"><span class="chip r">Deduplicated</span><span class="chip c">Schema enforced</span><span class="chip am">DLT expectations</span><span class="chip pu">Used by analysts/scientists</span></div>
+                <a class="acc-link" href="https://docs.databricks.com/en/delta-live-tables/expectations.html" target="_blank" rel="noopener">DLT Data Quality →</a>
+              </div></div>
+            </div>
+            <div class="accordion-item">
+              <button class="acc-trigger" aria-expanded="false">
+                <div class="acc-left"><div class="acc-icon">🥇</div><div><div class="acc-title">Gold — Business Aggregates</div><div class="acc-sub">Denormalised, ready for BI &amp; dashboards</div></div></div>
+                <span class="acc-chevron">▼</span>
+              </button>
+              <div class="acc-body"><div class="acc-inner">
+                <p>Gold tables are business-level aggregates — daily revenue, MAU, customer LTV. Wide, denormalised, optimised for fast BI queries. Power BI, Tableau, and Looker connect to Gold via <strong>SQL Warehouses</strong> or JDBC/ODBC.</p>
+                <div class="chips"><span class="chip am">Business aggregates</span><span class="chip r">BI &amp; dashboards</span><span class="chip g">Optimised for reads</span><span class="chip c">Partition by date/region</span></div>
+                <a class="acc-link" href="https://www.databricks.com/glossary/medallion-architecture" target="_blank" rel="noopener">Medallion overview →</a>
+              </div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Unity Catalog -->
+        <div class="tab-panel" id="tab-unity">
+          <div class="accordion">
+            <div class="accordion-item open">
+              <button class="acc-trigger" aria-expanded="true">
+                <div class="acc-left"><div class="acc-icon">🏛️</div><div><div class="acc-title">Three-Level Namespace</div><div class="acc-sub">catalog.schema.table — unified across workspaces</div></div></div>
+                <span class="acc-chevron">▼</span>
+              </button>
+              <div class="acc-body"><div class="acc-inner">
+                <p>Unity Catalog uses a three-level namespace: <strong>Catalog → Schema → Table</strong>. A metastore (one per region) contains multiple catalogs. Always use the full three-part path in production SQL: <code style="font-family:var(--font-code);font-size:.85em">my_catalog.silver.orders</code>.</p>
+                <div class="chips"><span class="chip c">Catalog → Schema → Table</span><span class="chip r">Cross-workspace access</span><span class="chip g">Delta Sharing (external)</span></div>
+                <a class="acc-link" href="https://docs.databricks.com/en/data-governance/unity-catalog/index.html" target="_blank" rel="noopener">Unity Catalog docs →</a>
+              </div></div>
+            </div>
+            <div class="accordion-item">
+              <button class="acc-trigger" aria-expanded="false">
+                <div class="acc-left"><div class="acc-icon">🔒</div><div><div class="acc-title">Access Control</div><div class="acc-sub">Row, column, and table-level permissions</div></div></div>
+                <span class="acc-chevron">▼</span>
+              </button>
+              <div class="acc-body"><div class="acc-inner">
+                <p>Unity Catalog uses SQL GRANT/REVOKE. Row filters and column masks restrict what specific users see — mask PII for non-privileged users, filter rows by region.</p>
+                <div class="code-wrap">
+                  <div class="code-header"><span class="code-title">Access control</span><div style="display:flex;gap:var(--s2);align-items:center"><span class="code-lang">SQL</span><button class="copy-btn" onclick="copyCode(this)">📋 Copy</button></div></div>
+                  <div class="code-body"><pre><span class="cc">-- Grant SELECT on a table to a group</span>
+<span class="ck">GRANT SELECT ON TABLE</span> gold.revenue
+  <span class="ck">TO</span> <span class="cs">`<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b0d1ded1dcc9c3c4c3f0d3dfddc0d1dec99ed3dfdd">[email&#160;protected]</a>`</span>;
+
+<span class="cc">-- Grant usage on an entire schema</span>
+<span class="ck">GRANT USAGE ON SCHEMA</span> gold
+  <span class="ck">TO</span> <span class="cs">`data-team`</span>;
+
+<span class="cc">-- Create a row access policy</span>
+<span class="ck">CREATE ROW ACCESS POLICY</span> region_filter
+  <span class="ck">AS</span> (region <span class="ck">STRING</span>)
+  <span class="ck">RETURN</span> region = <span class="cf">current_user_region</span>();</pre></div>
+                </div>
+                <a class="acc-link" href="https://docs.databricks.com/en/data-governance/unity-catalog/manage-privileges/index.html" target="_blank" rel="noopener">Manage privileges →</a>
+              </div></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /arch-tabs -->
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE: RESOURCES — live search + category filter
+══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-resources">
+  <div class="container">
+    <div class="page-pad">
+
+      <div class="sec-label">Global Search</div>
+      <h2 class="sec-title">Search <span class="a">Everything</span></h2>
+      <p class="sec-desc">Search across all portal content — resources, architecture topics, learning steps, concepts, and code examples. Type anything to begin.</p>
+
+      <div class="search-bar" style="max-width:640px">
+        <span style="color:var(--text-faint);flex-shrink:0">🔍</span>
+        <input type="text" id="res-search"
+               placeholder="Search… try delta, merge, mlflow, certification, medallion, azure…"
+               aria-label="Search all portal content" autocomplete="off">
+        <button class="search-clear" id="search-clear" onclick="clearSearch()" aria-label="Clear">✕</button>
+      </div>
+
+      <div class="filter-bar" id="filter-bar">
+        <button class="filter-pill active" data-filter="all">All Sections</button>
+        <button class="filter-pill" data-filter="resource">Resources &amp; Docs</button>
+        <button class="filter-pill" data-filter="architecture">Architecture</button>
+        <button class="filter-pill" data-filter="learning">Learning Path</button>
+        <button class="filter-pill" data-filter="concept">Concepts &amp; Features</button>
+      </div>
+
+      <div class="result-count">
+        Showing <span id="match-count">0</span> results
+        <span id="search-hint" style="color:var(--text-faint);margin-left:var(--s3)">— type to search all portal content</span>
+      </div>
+
+      <!-- Results rendered by JavaScript from CONTENT_INDEX -->
+      <div id="search-results-grid" class="card-grid" style="margin-top:var(--s2)"></div>
+
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-title">No results found</div>
+        <p class="empty-text">Try a different keyword or select "All Sections" to reset.</p>
+        <button class="btn-ghost" onclick="clearSearch()">Clear search</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE: LEARNING PATH<!-- ══════════════════════════════════════════════════════════════
+     PAGE: LEARNING PATH
+══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-learning">
+  <div class="container">
+    <div class="page-pad">
+
+      <div class="sec-label">Structured Path</div>
+      <h2 class="sec-title">Your <span class="a">Learning Path</span></h2>
+      <p class="sec-desc">Follow these steps in order — all links are free official resources. Estimated total: 3–6 weeks part-time.</p>
+
+      <div class="accordion">
+
+        <div class="accordion-item open">
+          <button class="acc-trigger" aria-expanded="true">
+            <div class="acc-left"><div class="acc-icon" style="background:var(--green-dim);font-size:1.1rem">01</div><div><div class="acc-title">Get a Free Workspace</div><div class="acc-sub">Beginner · 15 min · No credit card needed</div></div></div>
+            <span class="acc-chevron">▼</span>
+          </button>
+          <div class="acc-body"><div class="acc-inner">
+            <p>Databricks Community Edition gives you a full workspace with a shared cluster, notebooks, and Delta Lake support — completely free. The best way to learn is by doing, and this is where you start.</p>
+            <a class="acc-link" href="https://community.cloud.databricks.com/login.html" target="_blank" rel="noopener">Sign up for Community Edition →</a><br>
+            <a class="acc-link" href="https://docs.databricks.com/en/getting-started/index.html" target="_blank" rel="noopener">Official Getting Started Guide →</a>
+          </div></div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="acc-trigger" aria-expanded="false">
+            <div class="acc-left"><div class="acc-icon" style="background:var(--green-dim);font-size:1.1rem">02</div><div><div class="acc-title">Learn Spark &amp; DataFrames</div><div class="acc-sub">Beginner · 1–2 weeks</div></div></div>
+            <span class="acc-chevron">▼</span>
+          </button>
+          <div class="acc-body"><div class="acc-inner">
+            <p>Master the PySpark DataFrame API — reading data, transformations (filter, groupBy, join, withColumn) and actions (show, count, write). Understand <strong>lazy evaluation</strong> and the DAG execution model. This is the foundation of everything.</p>
+            <a class="acc-link" href="https://spark.apache.org/docs/latest/api/python/getting_started/index.html" target="_blank" rel="noopener">PySpark Getting Started →</a><br>
+            <a class="acc-link" href="https://docs.databricks.com/en/getting-started/dataframes.html" target="_blank" rel="noopener">DataFrames on Databricks →</a>
+          </div></div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="acc-trigger" aria-expanded="false">
+            <div class="acc-left"><div class="acc-icon" style="background:var(--amber-dim);font-size:1.1rem">03</div><div><div class="acc-title">Master Delta Lake</div><div class="acc-sub">Intermediate · 1 week</div></div></div>
+            <span class="acc-chevron">▼</span>
+          </button>
+          <div class="acc-body"><div class="acc-inner">
+            <p>Learn ACID transactions, MERGE/upsert, time travel, OPTIMIZE, VACUUM, and the Medallion Architecture. Delta Lake is the core differentiator of the Databricks Lakehouse — master it early.</p>
+            <a class="acc-link" href="https://docs.delta.io/latest/quick-start.html" target="_blank" rel="noopener">Delta Lake Quickstart →</a><br>
+            <a class="acc-link" href="https://docs.databricks.com/en/delta/index.html" target="_blank" rel="noopener">Delta on Databricks Guide →</a>
+          </div></div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="acc-trigger" aria-expanded="false">
+            <div class="acc-left"><div class="acc-icon" style="background:var(--amber-dim);font-size:1.1rem">04</div><div><div class="acc-title">Build Pipelines with DLT &amp; Workflows</div><div class="acc-sub">Intermediate · 1 week</div></div></div>
+            <span class="acc-chevron">▼</span>
+          </button>
+          <div class="acc-body"><div class="acc-inner">
+            <p>Build a full Bronze→Silver→Gold pipeline with Delta Live Tables. Add data quality expectations with <code style="font-family:var(--font-code);font-size:.85em">@expect</code>. Schedule it as a production Workflow job with alerts.</p>
+            <a class="acc-link" href="https://docs.databricks.com/en/delta-live-tables/index.html" target="_blank" rel="noopener">Delta Live Tables Docs →</a><br>
+            <a class="acc-link" href="https://docs.databricks.com/en/jobs/index.html" target="_blank" rel="noopener">Databricks Workflows →</a>
+          </div></div>
+        </div>
+
+        <div class="accordion-item">
+          <button class="acc-trigger" aria-expanded="false">
+            <div class="acc-left"><div class="acc-icon" style="background:var(--accent-dim);font-size:1.1rem">05</div><div><div class="acc-title">Get Certified</div><div class="acc-sub">Advanced · Exam prep 2–4 weeks</div></div></div>
+            <span class="acc-chevron">▼</span>
+          </button>
+          <div class="acc-body"><div class="acc-inner">
+            <p>The <strong>Data Engineer Associate</strong> is the recommended first certification. Study with free Databricks Academy courses, then take the proctored online exam. The Professional tier follows after real-world experience.</p>
+            <a class="acc-link" href="https://www.databricks.com/learn/certification/data-engineer-associate" target="_blank" rel="noopener">Data Engineer Associate →</a><br>
+            <a class="acc-link" href="https://www.databricks.com/learn/training/home" target="_blank" rel="noopener">Free Academy Courses →</a>
+          </div></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE: ABOUT
+══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-about">
+  <div class="container">
+    <div class="page-pad">
+
+      <div class="sec-label">Our Mission</div>
+      <h2 class="sec-title">Why This <span class="a">Portal Exists</span></h2>
+
+      <div style="max-width:720px;margin-bottom:var(--s12)">
+        <p style="font-size:var(--lg);line-height:1.85;color:var(--text-muted);margin-bottom:var(--s6)">
+          The Databricks ecosystem is powerful — but its knowledge is scattered across official docs,
+          community forums, GitHub repos, YouTube talks, blog posts, and certification study guides.
+          Finding the right resource at the right moment takes too long.
+        </p>
+        <p style="font-size:var(--lg);line-height:1.85;color:var(--text-muted)">
+          This portal exists to fix that. One place. Everything curated, searchable, and organised
+          so practitioners can spend less time hunting and more time building.
+        </p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--s5);margin-bottom:var(--s12)">
+
+        <div class="rcard" style="border-left:3px solid var(--accent)">
+          <div class="cicon r">&#x1F3AF;</div>
+          <div><h3 class="ctitle">One-Stop Knowledge Hub</h3></div>
+          <p class="cdesc">Official docs, open-source guides, cloud references, community links, and certification resources — all under one roof. No more tab-switching or searching "where was that page again?"</p>
+        </div>
+
+        <div class="rcard" style="border-left:3px solid var(--cyan)">
+          <div class="cicon c">&#x1F91D;</div>
+          <div><h3 class="ctitle">Built for Knowledge Sharing</h3></div>
+          <p class="cdesc">Onboarding a new team member? Prepping for a certification? Sharing a reference with a colleague? This portal gives teams a shared starting point — bookmark it, share it, use it daily.</p>
+        </div>
+
+        <div class="rcard" style="border-left:3px solid var(--green)">
+          <div class="cicon g">&#x1F50D;</div>
+          <div><h3 class="ctitle">Search Everything at Once</h3></div>
+          <p class="cdesc">The global search covers every resource, architecture topic, learning step, and concept in the portal. One search box, all sections. Type "delta" or "mlflow" and see results from everywhere.</p>
+        </div>
+
+        <div class="rcard" style="border-left:3px solid var(--amber)">
+          <div class="cicon am">&#x1F4D0;</div>
+          <div><h3 class="ctitle">Structured Learning Paths</h3></div>
+          <p class="cdesc">Not just a link dump — a structured journey from zero to certified. Each step builds on the last, with time estimates and the exact free resources to use at every stage.</p>
+        </div>
+
+        <div class="rcard" style="border-left:3px solid var(--purple)">
+          <div class="cicon pu">&#x26A1;</div>
+          <div><h3 class="ctitle">Always Official Sources</h3></div>
+          <p class="cdesc">Every link points to official documentation, open-source repositories, or Databricks' own learning platform. No paywalls, no outdated third-party tutorials, no guesswork.</p>
+        </div>
+
+        <div class="rcard" style="border-left:3px solid var(--cyan)">
+          <div class="cicon c">&#x1F30D;</div>
+          <div><h3 class="ctitle">Community-Driven</h3></div>
+          <p class="cdesc">Built by practitioners, for practitioners. The content reflects the real questions data engineers, scientists, and analysts face when building production Lakehouse pipelines.</p>
+        </div>
+
+      </div>
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r-xl);padding:var(--s8);margin-bottom:var(--s12)">
+        <div class="sec-label" style="margin-bottom:var(--s5)">Coverage</div>
+        <h3 style="font-size:var(--xl);font-weight:800;letter-spacing:-.02em;margin-bottom:var(--s6)">What&#39;s Inside</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:var(--s6)">
+          <div>
+            <div style="font-family:var(--font-code);font-size:var(--xs);color:var(--accent);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:var(--s3)">Architecture</div>
+            <ul style="display:flex;flex-direction:column;gap:var(--s2)">
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; Two-plane architecture</li>
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; Cluster types explained</li>
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; Delta Lake deep dive</li>
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; Medallion architecture</li>
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; Unity Catalog governance</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-family:var(--font-code);font-size:var(--xs);color:var(--cyan);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:var(--s3)">Resources</div>
+            <ul style="display:flex;flex-direction:column;gap:var(--s2)">
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; Official Databricks docs</li>
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; Apache Spark reference</li>
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; Delta Lake &amp; MLflow</li>
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; Cloud-specific guides</li>
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; Community forums &amp; blog</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-family:var(--font-code);font-size:var(--xs);color:var(--green);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:var(--s3)">Learning</div>
+            <ul style="display:flex;flex-direction:column;gap:var(--s2)">
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; Free workspace setup</li>
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; Spark &amp; DataFrames</li>
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; Delta Lake mastery</li>
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; DLT pipeline patterns</li>
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; Certification roadmap</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-family:var(--font-code);font-size:var(--xs);color:var(--amber);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:var(--s3)">Code Examples</div>
+            <ul style="display:flex;flex-direction:column;gap:var(--s2)">
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; MERGE / Time Travel SQL</li>
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; OPTIMIZE &amp; VACUUM</li>
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; Access control grants</li>
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; Row access policies</li>
+              <li style="font-size:var(--sm);color:var(--text-muted)">&rarr; Auto-optimize settings</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:var(--s4);flex-wrap:wrap;align-items:center">
+        <button class="btn-primary" onclick="nav('resources')">Browse All Resources &rarr;</button>
+        <button class="btn-ghost" onclick="nav('learning')">Start Learning Path &rarr;</button>
+        <a class="btn-ghost" href="https://community.databricks.com" target="_blank" rel="noopener">Join the Community &#x2197;</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand"><div class="fbicon">▲</div>Databricks Hub</div>
+        <p class="footer-desc">Your one-stop Databricks knowledge hub — official docs, architecture deep-dives, learning paths, and curated resources, all searchable in one place.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Navigate</div>
+        <ul class="flinks">
+          <li><button onclick="nav('home')">Home</button></li>
+          <li><button onclick="nav('architecture')">Architecture</button></li>
+          <li><button onclick="nav('resources')">Resources</button></li>
+          <li><button onclick="nav('learning')">Learning Path</button></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Official Docs</div>
+        <ul class="flinks">
+          <li><a href="https://docs.databricks.com" target="_blank" rel="noopener">Databricks</a></li>
+          <li><a href="https://docs.delta.io" target="_blank" rel="noopener">Delta Lake</a></li>
+          <li><a href="https://mlflow.org/docs/latest" target="_blank" rel="noopener">MLflow</a></li>
+          <li><a href="https://spark.apache.org/docs/latest" target="_blank" rel="noopener">Apache Spark</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Community</div>
+        <ul class="flinks">
+          <li><a href="https://community.databricks.com" target="_blank" rel="noopener">Forum</a></li>
+          <li><a href="https://www.databricks.com/blog" target="_blank" rel="noopener">Blog</a></li>
+          <li><a href="https://github.com/databricks" target="_blank" rel="noopener">GitHub</a></li>
+          <li><a href="https://www.youtube.com/@Databricks" target="_blank" rel="noopener">YouTube</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Databricks Hub — Community Portal</span>
+      <span>Not affiliated with Databricks, Inc.</span>
+      <span class="fcode">databricks-knowledge-portal v1.0</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast element -->
+<div class="toast" id="toast" role="alert" aria-live="polite">
+  <span class="toast-icon" id="toast-icon"></span>
+  <span class="toast-msg" id="toast-msg"></span>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     JAVASCRIPT — Portal client-side logic
+══════════════════════════════════════════════════════════════ -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+/* ══════════════════════════════════════════════════════════════
+   PATTERN 1 — SPA NAVIGATION
+   ══════════════════════════════════════════════════════════════
+   The core function: nav(pageId)
+   1. Hide all pages (remove .active)
+   2. Show the target page (add .active)
+   3. Update nav button highlight
+   4. Update URL hash (enables back/forward + bookmarking)
+   5. Scroll to top of new page
+   6. Sync mobile menu highlight
+
+   window.location.hash = '#architecture'
+   → changes the URL bar to example.com/#architecture
+   → doesn't trigger a page reload (unlike changing the path)
+   → can be read back with window.location.hash
+
+   This is the foundation of every SPA router.
+*/
+function nav(pageId) {
+  // 1. Hide all pages
+  document.querySelectorAll('.page').forEach(function(p) {
+    p.classList.remove('active');
+  });
+
+  // 2. Show the target page
+  var target = document.getElementById('page-' + pageId);
+  if (target) target.classList.add('active');
+
+  // 3. Update desktop nav button highlights
+  document.querySelectorAll('.navbar-links button').forEach(function(btn) {
+    btn.classList.toggle('active', btn.getAttribute('data-page') === pageId);
+  });
+
+  // 4. Update URL hash (no reload, enables back/forward)
+  window.location.hash = pageId;
+
+  // 5. Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // 6. Sync mobile menu buttons
+  document.querySelectorAll('.mobile-menu button[data-page]').forEach(function(btn) {
+    btn.classList.toggle('active', btn.getAttribute('data-page') === pageId);
+  });
+
+  // 7. If the new page has tabs, initialise the ink bar
+  // (needs a tiny delay so the page is visible and has layout)
+  if (pageId === 'architecture') {
+    setTimeout(function() { initInkBar('arch-tab-nav', 'arch-ink'); }, 50);
+  }
+}
+
+// Read hash on load — so direct URLs like example.com/#resources work
+(function() {
+  var hash = window.location.hash.replace('#', '');
+  var validPages = ['home', 'architecture', 'resources', 'learning', 'about'];
+  nav(validPages.includes(hash) ? hash : 'home');
+})();
+
+// Handle browser back / forward buttons
+window.addEventListener('popstate', function() {
+  var hash = window.location.hash.replace('#', '');
+  nav(hash || 'home');
+});
+
+// Wire up ALL nav buttons with data-page attribute (desktop + mobile)
+document.querySelectorAll('button[data-page]').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    nav(this.getAttribute('data-page'));
+  });
+});
+
+// Wire up brand logo click
+document.querySelector('.navbar-brand').addEventListener('click', function() {
+  nav('home');
+});
+
+
+/* ══════════════════════════════════════════════════════════════
+   PATTERN 2 — TABS COMPONENT
+   ══════════════════════════════════════════════════════════════
+   Two jobs:
+   A) Show/hide panels — same .active class trick as SPA nav
+   B) Move the ink bar — read button position, set inline CSS
+
+   The ink bar magic:
+   btn.offsetLeft  → pixels from left edge of parent to button
+   btn.offsetWidth → width of the button in pixels
+   We set these as inline styles on the ink bar div.
+   CSS transition does the smooth slide animation.
+*/
+function initInkBar(navId, inkId) {
+  var nav = document.getElementById(navId);
+  var ink = document.getElementById(inkId);
+  if (!nav || !ink) return;
+  var active = nav.querySelector('.tab-btn.active');
+  if (!active) return;
+  ink.style.left  = active.offsetLeft + 'px';
+  ink.style.width = active.offsetWidth + 'px';
+}
+
+function switchTab(groupEl, tabId, inkId) {
+  // Hide all panels in this group
+  groupEl.querySelectorAll('.tab-panel').forEach(function(p) {
+    p.classList.remove('active');
+  });
+  // Show target panel
+  var panel = document.getElementById('tab-' + tabId);
+  if (panel) panel.classList.add('active');
+
+  // Update button states
+  var nav = groupEl.querySelector('.tab-nav');
+  nav.querySelectorAll('.tab-btn').forEach(function(b) {
+    b.classList.remove('active');
+  });
+  var activeBtn = nav.querySelector('[data-tab="' + tabId + '"]');
+  if (!activeBtn) return;
+  activeBtn.classList.add('active');
+
+  // Move ink bar
+  var ink = document.getElementById(inkId);
+  if (ink) {
+    ink.style.left  = activeBtn.offsetLeft + 'px';
+    ink.style.width = activeBtn.offsetWidth + 'px';
+  }
+}
+
+// Wire up arch tabs
+document.querySelectorAll('#arch-tab-nav .tab-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    switchTab(
+      document.getElementById('arch-tabs'),
+      this.getAttribute('data-tab'),
+      'arch-ink'
+    );
+  });
+});
+
+
+/* ══════════════════════════════════════════════════════════════
+   PATTERN 3 — ACCORDION COMPONENT
+   ══════════════════════════════════════════════════════════════
+   toggle() flips the .open class on the accordion-item.
+   CSS does everything else:
+   - .open .acc-body { max-height: 900px } → expands
+   - .open .acc-chevron { transform: rotate(180deg) } → flips arrow
+   - transition on max-height → smooth animation
+
+   Optional: close others in the same group (accordion behaviour).
+   We do this as the default — one item open at a time.
+*/
+document.querySelectorAll('.acc-trigger').forEach(function(trigger) {
+  trigger.addEventListener('click', function() {
+    var item = this.closest('.accordion-item');
+    var accordion = this.closest('.accordion');
+    var isOpen = item.classList.contains('open');
+
+    // Close all siblings in this accordion group
+    accordion.querySelectorAll('.accordion-item').forEach(function(sibling) {
+      sibling.classList.remove('open');
+      var t = sibling.querySelector('.acc-trigger');
+      if (t) t.setAttribute('aria-expanded', 'false');
+    });
+
+    // Open the clicked item if it was closed
+    if (!isOpen) {
+      item.classList.add('open');
+      this.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
+
+
+/* ══════════════════════════════════════════════════════════════
+   GLOBAL SEARCH ENGINE
+   ══════════════════════════════════════════════════════════════
+   CONTENT_INDEX is the single source of truth for everything
+   searchable in the portal. Each entry has:
+     title    → displayed as the card heading
+     desc     → displayed as the card body text
+     tags     → space-separated keywords (not shown, just matched)
+     category → maps to filter pill data-filter values
+     section  → display label (e.g. "Architecture", "Resource")
+     icon     → emoji shown in the result card
+     color    → icon background color class
+     links    → array of {label, url} OR {label, action}
+                action: a function name to call on click (for SPA nav)
+
+   When a user types in the search box:
+   1. Filter CONTENT_INDEX entries by term (checks title+desc+tags)
+   2. Also filter by active category pill
+   3. Render matching entries as HTML cards into #search-results-grid
+   4. Update counts, show/hide empty state
+
+   This approach means adding new searchable content is just adding
+   an object to CONTENT_INDEX — no new HTML needed.
+*/
+
+var CONTENT_INDEX = [
+
+  // ── RESOURCES ──────────────────────────────────────────────────
+  {
+    title: 'Official Documentation',
+    desc: 'Complete reference for all Databricks products, APIs, cluster configuration, and release notes.',
+    tags: 'documentation docs databricks reference api getting started release notes guides',
+    category: 'resource', section: 'Resources', icon: '📖', color: 'r',
+    links: [
+      { label: 'docs.databricks.com', url: 'https://docs.databricks.com' },
+      { label: 'Getting Started Guide', url: 'https://docs.databricks.com/en/getting-started/index.html' },
+      { label: 'Release Notes', url: 'https://docs.databricks.com/en/release-notes/index.html' }
+    ]
+  },
+  {
+    title: 'Academy & Certifications',
+    desc: 'Free self-paced courses and official certification exams for every skill level and role.',
+    tags: 'training academy certification exam courses learning free databricks associate professional',
+    category: 'resource', section: 'Resources', icon: '🎓', color: 'c',
+    links: [
+      { label: 'Databricks Academy', url: 'https://www.databricks.com/learn/training/home' },
+      { label: 'Certification Exams', url: 'https://www.databricks.com/learn/certification' },
+      { label: 'Course Catalog', url: 'https://www.databricks.com/learn/training/catalog' }
+    ]
+  },
+  {
+    title: 'Apache Spark',
+    desc: 'Official Spark documentation — programming guide, SQL reference, PySpark API, MLlib, and Structured Streaming.',
+    tags: 'spark apache pyspark sql streaming scala rdd dataframe mllib lazy evaluation dag catalyst',
+    category: 'resource', section: 'Resources', icon: '⚡', color: 'am',
+    links: [
+      { label: 'Spark Official Docs', url: 'https://spark.apache.org/docs/latest/' },
+      { label: 'PySpark API Reference', url: 'https://spark.apache.org/docs/latest/api/python/index.html' },
+      { label: 'Spark SQL Guide', url: 'https://spark.apache.org/docs/latest/sql-programming-guide.html' }
+    ]
+  },
+  {
+    title: 'Delta Lake',
+    desc: 'Open-source storage layer — ACID transactions, time travel, MERGE, OPTIMIZE, VACUUM, and Z-Order.',
+    tags: 'delta lake acid transactions time travel merge vacuum optimize zorder parquet storage open source',
+    category: 'resource', section: 'Resources', icon: '🦺', color: 'g',
+    links: [
+      { label: 'Delta Lake Docs', url: 'https://docs.delta.io/latest/index.html' },
+      { label: 'Quick Start Guide', url: 'https://docs.delta.io/latest/quick-start.html' },
+      { label: 'GitHub Repository', url: 'https://github.com/delta-io/delta' }
+    ]
+  },
+  {
+    title: 'MLflow',
+    desc: 'ML lifecycle platform — experiment tracking, model registry, deployment, and evaluation built into every workspace.',
+    tags: 'mlflow ml machine learning experiment tracking model registry serving deployment evaluation autologging',
+    category: 'resource', section: 'Resources', icon: '🧪', color: 'pu',
+    links: [
+      { label: 'MLflow Docs', url: 'https://mlflow.org/docs/latest/index.html' },
+      { label: 'MLflow Quickstart', url: 'https://mlflow.org/docs/latest/quickstart.html' },
+      { label: 'GitHub Repository', url: 'https://github.com/mlflow/mlflow' }
+    ]
+  },
+  {
+    title: 'Community & Engineering Blog',
+    desc: 'Q&A forum, engineering blog, YouTube channel, and recorded Data+AI Summit conference sessions.',
+    tags: 'community forum blog youtube video conference summit databricks engineering q&a discussions',
+    category: 'resource', section: 'Resources', icon: '💬', color: 'c',
+    links: [
+      { label: 'Community Forum', url: 'https://community.databricks.com' },
+      { label: 'Engineering Blog', url: 'https://www.databricks.com/blog' },
+      { label: 'YouTube Channel', url: 'https://www.youtube.com/@Databricks' }
+    ]
+  },
+  {
+    title: 'GitHub Repositories',
+    desc: 'Official Databricks GitHub org — sample notebooks, solution accelerators, and open-source libraries.',
+    tags: 'github repository open source notebooks examples sample accelerators databricks code repos',
+    category: 'resource', section: 'Resources', icon: '🐙', color: 'am',
+    links: [
+      { label: 'github.com/databricks', url: 'https://github.com/databricks' },
+      { label: 'Notebook Best Practices', url: 'https://github.com/databricks/notebook-best-practices' },
+      { label: 'Tech Talks & Notebooks', url: 'https://github.com/databricks/tech-talks' }
+    ]
+  },
+  {
+    title: 'Cloud-Specific Docs',
+    desc: 'Platform-specific documentation for Azure Databricks, AWS Databricks, and GCP Databricks deployments.',
+    tags: 'azure aws gcp google cloud microsoft amazon databricks setup networking integration vnet vpc storage adls s3',
+    category: 'resource', section: 'Resources', icon: '☁️', color: 'r',
+    links: [
+      { label: 'Azure Databricks', url: 'https://learn.microsoft.com/en-us/azure/databricks/' },
+      { label: 'AWS Databricks', url: 'https://docs.databricks.com/en/getting-started/overview.html' },
+      { label: 'GCP Databricks', url: 'https://docs.gcp.databricks.com/' }
+    ]
+  },
+  {
+    title: 'Delta Live Tables (DLT)',
+    desc: 'Declarative ETL framework for building reliable, maintainable, and testable data pipelines with built-in quality checks.',
+    tags: 'dlt delta live tables etl pipeline streaming batch expectations quality @expect autoloader bronze silver gold',
+    category: 'resource', section: 'Resources', icon: '🔄', color: 'c',
+    links: [
+      { label: 'DLT Documentation', url: 'https://docs.databricks.com/en/delta-live-tables/index.html' },
+      { label: 'DLT SQL Tutorial', url: 'https://docs.databricks.com/en/delta-live-tables/tutorial-sql.html' },
+      { label: 'Data Quality Expectations', url: 'https://docs.databricks.com/en/delta-live-tables/expectations.html' }
+    ]
+  },
+  {
+    title: 'Databricks Workflows & Jobs',
+    desc: 'Orchestrate notebooks, scripts, and DLT pipelines on a schedule with dependencies, retries, and email alerts.',
+    tags: 'workflows jobs orchestration scheduling pipeline etl notebook task dependency retry alerts cron',
+    category: 'resource', section: 'Resources', icon: '🗓️', color: 'am',
+    links: [
+      { label: 'Workflows Docs', url: 'https://docs.databricks.com/en/jobs/index.html' },
+      { label: 'Job Clusters', url: 'https://docs.databricks.com/en/compute/configure.html' }
+    ]
+  },
+  {
+    title: 'Auto Loader',
+    desc: 'Incrementally and efficiently process new data files arriving in cloud object storage using checkpointing.',
+    tags: 'auto loader cloudfiles incremental ingestion streaming s3 adls gcs checkpoint new files detect',
+    category: 'resource', section: 'Resources', icon: '📥', color: 'g',
+    links: [
+      { label: 'Auto Loader Docs', url: 'https://docs.databricks.com/en/ingestion/cloud-object-storage/auto-loader/index.html' }
+    ]
+  },
+  {
+    title: 'Unity Catalog',
+    desc: 'Unified governance solution for data and AI — catalog.schema.table namespace, lineage, access control, and Delta Sharing.',
+    tags: 'unity catalog governance lineage audit logs access control row filter column mask grants permissions namespace catalog schema table delta sharing',
+    category: 'resource', section: 'Resources', icon: '🏛️', color: 'r',
+    links: [
+      { label: 'Unity Catalog Docs', url: 'https://docs.databricks.com/en/data-governance/unity-catalog/index.html' },
+      { label: 'Manage Privileges', url: 'https://docs.databricks.com/en/data-governance/unity-catalog/manage-privileges/index.html' }
+    ]
+  },
+
+  // ── ARCHITECTURE ───────────────────────────────────────────────
+  {
+    title: 'Two-Plane Architecture',
+    desc: 'The Control Plane (Databricks-managed) handles orchestration. The Data Plane (your cloud account) runs compute. Your data never leaves your VPC.',
+    tags: 'two plane control plane data plane vpc vnet architecture security isolation databricks managed compute',
+    category: 'architecture', section: 'Architecture', icon: '🏗️', color: 'r',
+    links: [{ label: 'View Architecture Page', action: 'nav("architecture")' }]
+  },
+  {
+    title: 'All-Purpose Clusters',
+    desc: 'Long-running interactive clusters for notebook development. Multiple users can share one. More expensive — always set auto-termination.',
+    tags: 'all purpose cluster interactive notebook shared multi user auto termination development explore',
+    category: 'architecture', section: 'Architecture', icon: '🖥️', color: 'c',
+    links: [
+      { label: 'Cluster Configuration', url: 'https://docs.databricks.com/en/compute/configure.html' },
+      { label: 'View Architecture Page', action: 'nav("architecture")' }
+    ]
+  },
+  {
+    title: 'Job Clusters',
+    desc: 'Ephemeral clusters created when a job starts, terminated when it finishes. Most cost-efficient option for production workloads.',
+    tags: 'job cluster ephemeral cost efficient production pipeline automated terminate finish isolated run',
+    category: 'architecture', section: 'Architecture', icon: '⚙️', color: 'am',
+    links: [
+      { label: 'Databricks Jobs', url: 'https://docs.databricks.com/en/jobs/index.html' },
+      { label: 'View Architecture Page', action: 'nav("architecture")' }
+    ]
+  },
+  {
+    title: 'SQL Warehouses',
+    desc: 'Compute optimised for SQL analytics and BI tools. Uses the Photon engine for vectorised execution. Supports serverless mode.',
+    tags: 'sql warehouse photon bi analytics power bi tableau looker jdbc odbc serverless compute sql engine',
+    category: 'architecture', section: 'Architecture', icon: '📊', color: 'g',
+    links: [
+      { label: 'SQL Warehouses Docs', url: 'https://docs.databricks.com/en/compute/sql-warehouse/index.html' },
+      { label: 'View Architecture Page', action: 'nav("architecture")' }
+    ]
+  },
+  {
+    title: 'Delta Lake — ACID & MERGE',
+    desc: 'Delta Lake adds ACID transactions to object storage. MERGE enables atomic upserts, inserts, and deletes in one SQL statement.',
+    tags: 'delta acid transactions merge upsert insert delete atomic rollback corrupt partial write',
+    category: 'architecture', section: 'Architecture', icon: '🔐', color: 'pu',
+    links: [
+      { label: 'Delta Updates & Deletes', url: 'https://docs.delta.io/latest/delta-update.html' },
+      { label: 'View Architecture Page', action: 'nav("architecture")' }
+    ]
+  },
+  {
+    title: 'Time Travel',
+    desc: 'Every write creates a versioned snapshot. Query any historical version for auditing, ML reproducibility, or recovering from accidental deletes.',
+    tags: 'time travel version history timestamp audit recover restore accidental delete snapshot transaction log',
+    category: 'architecture', section: 'Architecture', icon: '⏳', color: 'c',
+    links: [
+      { label: 'Time Travel Docs', url: 'https://docs.delta.io/latest/delta-utility.html#history' },
+      { label: 'View Architecture Page', action: 'nav("architecture")' }
+    ]
+  },
+  {
+    title: 'OPTIMIZE & Z-Order',
+    desc: 'OPTIMIZE compacts small files from streaming ingestion. Z-ORDER BY co-locates related data so queries can skip irrelevant files entirely.',
+    tags: 'optimize zorder z-order compact small files data skipping performance vacuum streaming ingestion',
+    category: 'architecture', section: 'Architecture', icon: '⚡', color: 'am',
+    links: [
+      { label: 'View Architecture Page', action: 'nav("architecture")' }
+    ]
+  },
+  {
+    title: 'Medallion Architecture',
+    desc: 'Three-layer data quality pattern: Bronze (raw), Silver (cleaned), Gold (aggregated). Data flows forward only. Each layer serves a different audience.',
+    tags: 'medallion bronze silver gold architecture layers raw cleaned aggregated data quality etl pipeline pattern',
+    category: 'architecture', section: 'Architecture', icon: '🏅', color: 'am',
+    links: [
+      { label: 'Medallion Overview', url: 'https://www.databricks.com/glossary/medallion-architecture' },
+      { label: 'View Architecture Page', action: 'nav("architecture")' }
+    ]
+  },
+  {
+    title: 'Unity Catalog Namespace',
+    desc: 'Three-level namespace: catalog.schema.table. One metastore per region. Always use the full three-part path in production SQL.',
+    tags: 'unity catalog namespace catalog schema table three level metastore path production governance',
+    category: 'architecture', section: 'Architecture', icon: '🏛️', color: 'r',
+    links: [
+      { label: 'Unity Catalog Docs', url: 'https://docs.databricks.com/en/data-governance/unity-catalog/index.html' },
+      { label: 'View Architecture Page', action: 'nav("architecture")' }
+    ]
+  },
+  {
+    title: 'Photon Engine',
+    desc: "Databricks' proprietary C++ vectorised query engine. 2–12× faster than standard Spark on analytical SQL workloads.",
+    tags: 'photon engine vectorised c++ performance sql analytics faster acceleration serverless',
+    category: 'architecture', section: 'Architecture', icon: '🚀', color: 'g',
+    links: [{ label: 'Photon Overview', url: 'https://www.databricks.com/product/photon' }]
+  },
+
+  // ── LEARNING PATH ──────────────────────────────────────────────
+  {
+    title: 'Step 1 — Get a Free Workspace',
+    desc: 'Databricks Community Edition: full workspace with notebooks, Delta Lake, and a shared cluster. Free, no credit card.',
+    tags: 'free workspace community edition beginner start setup no credit card cluster notebook',
+    category: 'learning', section: 'Learning Path', icon: '🆓', color: 'g',
+    links: [
+      { label: 'Sign Up Free', url: 'https://community.cloud.databricks.com/login.html' },
+      { label: 'Getting Started', url: 'https://docs.databricks.com/en/getting-started/index.html' }
+    ]
+  },
+  {
+    title: 'Step 2 — Learn Spark & DataFrames',
+    desc: 'Master PySpark DataFrame operations — filter, groupBy, join, withColumn. Understand lazy evaluation and the DAG execution model.',
+    tags: 'spark dataframes pyspark filter groupby join withcolumn lazy evaluation dag actions transformations',
+    category: 'learning', section: 'Learning Path', icon: '⚡', color: 'am',
+    links: [
+      { label: 'PySpark Getting Started', url: 'https://spark.apache.org/docs/latest/api/python/getting_started/index.html' },
+      { label: 'DataFrames on Databricks', url: 'https://docs.databricks.com/en/getting-started/dataframes.html' }
+    ]
+  },
+  {
+    title: 'Step 3 — Master Delta Lake',
+    desc: 'ACID transactions, MERGE/upsert, time travel, OPTIMIZE, VACUUM, and the Medallion Architecture. The core of the Lakehouse.',
+    tags: 'delta lake mastery acid merge time travel optimize vacuum medallion intermediate',
+    category: 'learning', section: 'Learning Path', icon: '🦺', color: 'c',
+    links: [
+      { label: 'Delta Quickstart', url: 'https://docs.delta.io/latest/quick-start.html' },
+      { label: 'Delta on Databricks', url: 'https://docs.databricks.com/en/delta/index.html' }
+    ]
+  },
+  {
+    title: 'Step 4 — Build Pipelines with DLT',
+    desc: 'Declare Bronze→Silver→Gold pipelines with Delta Live Tables. Add quality expectations with @expect. Schedule with Workflows.',
+    tags: 'dlt delta live tables pipeline bronze silver gold expectations schedule workflows production intermediate',
+    category: 'learning', section: 'Learning Path', icon: '🔄', color: 'pu',
+    links: [
+      { label: 'DLT Docs', url: 'https://docs.databricks.com/en/delta-live-tables/index.html' },
+      { label: 'Databricks Workflows', url: 'https://docs.databricks.com/en/jobs/index.html' }
+    ]
+  },
+  {
+    title: 'Step 5 — Get Certified',
+    desc: 'Data Engineer Associate certification — study free Academy courses, then take the proctored online exam. Professional tier follows.',
+    tags: 'certification exam data engineer associate professional advanced certified study prep',
+    category: 'learning', section: 'Learning Path', icon: '🏆', color: 'am',
+    links: [
+      { label: 'Data Engineer Associate', url: 'https://www.databricks.com/learn/certification/data-engineer-associate' },
+      { label: 'Free Academy Courses', url: 'https://www.databricks.com/learn/training/home' }
+    ]
+  },
+
+  // ── CONCEPTS & FEATURES ────────────────────────────────────────
+  {
+    title: 'Lakehouse Architecture',
+    desc: 'Combines the low cost of a data lake with the reliability of a data warehouse. Open-format storage + ACID transactions + SQL analytics + ML — all unified.',
+    tags: 'lakehouse architecture data lake warehouse unified open format parquet cheap reliable sql ml ai',
+    category: 'concept', section: 'Concepts', icon: '🏠', color: 'r',
+    links: [
+      { label: 'Lakehouse Overview', url: 'https://www.databricks.com/product/data-lakehouse' },
+      { label: 'Glossary', url: 'https://www.databricks.com/glossary/data-lakehouse' }
+    ]
+  },
+  {
+    title: 'Bronze Layer — Raw Ingestion',
+    desc: 'First layer of Medallion Architecture. Data lands exactly as received from source. Use Auto Loader (cloudFiles) for incremental ingestion.',
+    tags: 'bronze raw ingestion landing zone autoloader cloudfiles incremental checkpoint metadata append only',
+    category: 'concept', section: 'Concepts', icon: '🥉', color: 'am',
+    links: [{ label: 'Auto Loader Docs', url: 'https://docs.databricks.com/en/ingestion/cloud-object-storage/auto-loader/index.html' }]
+  },
+  {
+    title: 'Silver Layer — Cleaned Data',
+    desc: 'Second Medallion layer. Deduplication, type casting, schema enforcement, DLT quality expectations. Consumed by analysts and data scientists.',
+    tags: 'silver cleaned deduplication type cast schema enforcement dlt expectations data quality analyst scientist',
+    category: 'concept', section: 'Concepts', icon: '🥈', color: 'c',
+    links: [{ label: 'DLT Expectations', url: 'https://docs.databricks.com/en/delta-live-tables/expectations.html' }]
+  },
+  {
+    title: 'Gold Layer — Business Aggregates',
+    desc: 'Third Medallion layer. Denormalised, aggregated, BI-ready tables. Daily revenue, MAU, customer LTV. Connected to dashboards via SQL Warehouses.',
+    tags: 'gold aggregated denormalised bi ready daily revenue mau dashboard power bi tableau looker',
+    category: 'concept', section: 'Concepts', icon: '🥇', color: 'am',
+    links: [{ label: 'Medallion Architecture', url: 'https://www.databricks.com/glossary/medallion-architecture' }]
+  },
+  {
+    title: 'Structured Streaming',
+    desc: 'Process real-time data streams using the same DataFrame API as batch. Micro-batch or continuous modes. Stateful operations, watermarks.',
+    tags: 'structured streaming real time stream micro batch continuous stateful watermark kafka event hub',
+    category: 'concept', section: 'Concepts', icon: '🌊', color: 'c',
+    links: [
+      { label: 'Structured Streaming Guide', url: 'https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html' }
+    ]
+  },
+  {
+    title: 'MLflow Experiment Tracking',
+    desc: 'Log parameters, metrics, and artefacts from every training run. Compare runs visually. Reproducible experiments baked into every Databricks notebook.',
+    tags: 'mlflow experiment tracking parameters metrics artifacts autolog runs compare reproducible training',
+    category: 'concept', section: 'Concepts', icon: '📈', color: 'pu',
+    links: [
+      { label: 'Tracking Quickstart', url: 'https://mlflow.org/docs/latest/quickstart.html' },
+      { label: 'MLflow on Databricks', url: 'https://docs.databricks.com/en/mlflow/index.html' }
+    ]
+  },
+  {
+    title: 'VACUUM Command',
+    desc: 'Remove old data files that are no longer part of the current Delta table version. Default retention 7 days. Always run after bulk deletes.',
+    tags: 'vacuum remove old files retention cleanup bulk delete storage cost data files',
+    category: 'concept', section: 'Concepts', icon: '🧹', color: 'g',
+    links: [{ label: 'View Architecture Page', action: 'nav("architecture")' }]
+  },
+  {
+    title: 'Data Skipping & Z-Order',
+    desc: 'Z-ORDER BY co-locates related rows in the same files. Delta tracks min/max per column per file. Queries skip entire files when filters match.',
+    tags: 'data skipping z-order zorder min max statistics column file pruning performance query speed',
+    category: 'concept', section: 'Concepts', icon: '⏩', color: 'am',
+    links: [{ label: 'View Architecture Page', action: 'nav("architecture")' }]
+  }
+];
+
+/* ── Section colour config ── */
+var SECTION_COLORS = {
+  'Resources': 'r',
+  'Architecture': 'c',
+  'Learning Path': 'am',
+  'Concepts': 'pu'
+};
+var SECTION_ICONS = {
+  'Resources': '🔗',
+  'Architecture': '🏛️',
+  'Learning Path': '📚',
+  'Concepts': '💡'
+};
+
+/* ── DOM refs ── */
+var searchInput   = document.getElementById('res-search');
+var searchClear   = document.getElementById('search-clear');
+var filterBar     = document.getElementById('filter-bar');
+var resultsGrid   = document.getElementById('search-results-grid');
+var emptyState    = document.getElementById('empty-state');
+var matchCount    = document.getElementById('match-count');
+var searchHint    = document.getElementById('search-hint');
+
+/* ── Main search function ──────────────────────────────────────
+   Runs on every keystroke and every filter pill click.
+   Queries CONTENT_INDEX (not the DOM) — this is faster and
+   means search works even for content on hidden pages.
+*/
+function runSearch() {
+  var term     = searchInput.value.toLowerCase().trim();
+  var category = filterBar.querySelector('.filter-pill.active').getAttribute('data-filter');
+
+  // Filter the index
+  var results = CONTENT_INDEX.filter(function(item) {
+    var catMatch = (category === 'all') || (item.category === category);
+    var searchText = (item.title + ' ' + item.desc + ' ' + item.tags).toLowerCase();
+    var termMatch  = !term || searchText.includes(term);
+    return catMatch && termMatch;
+  });
+
+  // Render results
+  renderResults(results, term);
+
+  // Update UI
+  matchCount.textContent = results.length;
+  searchHint.style.display = term ? 'none' : '';
+  searchClear.classList.toggle('vis', term.length > 0);
+  emptyState.classList.toggle('vis', results.length === 0 && (term.length > 0 || category !== 'all'));
+}
+
+/* ── Card renderer ─────────────────────────────────────────────
+   Builds HTML for each result. We use innerHTML for performance
+   (much faster than creating DOM nodes one by one for lists).
+   Each card is wrapped in a <article> with the same styling
+   as the manual resource cards but driven from the index.
+*/
+function renderResults(results, term) {
+  if (results.length === 0) {
+    resultsGrid.innerHTML = '';
+    return;
+  }
+
+  // Group by section
+  var groups = {};
+  results.forEach(function(item) {
+    if (!groups[item.section]) groups[item.section] = [];
+    groups[item.section].push(item);
+  });
+
+  var html = '';
+  Object.keys(groups).forEach(function(section) {
+    // Section header
+    html += '<div style="grid-column:1/-1;display:flex;align-items:center;gap:var(--s3);'
+          + 'margin-top:var(--s6);margin-bottom:var(--s2)">'
+          + '<span style="font-size:1.1rem">' + SECTION_ICONS[section] + '</span>'
+          + '<span style="font-family:var(--font-code);font-size:var(--xs);font-weight:700;'
+          + 'text-transform:uppercase;letter-spacing:.12em;color:var(--text-faint)">'
+          + section + '</span>'
+          + '<span style="flex:1;height:1px;background:var(--border)"></span>'
+          + '<span style="font-family:var(--font-code);font-size:var(--xs);color:var(--text-faint)">'
+          + groups[section].length + ' result' + (groups[section].length !== 1 ? 's' : '') + '</span>'
+          + '</div>';
+
+    groups[section].forEach(function(item) {
+      // Highlight the matched term in title
+      var title = term
+        ? item.title.replace(new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi'),
+            '<mark style="background:var(--accent-dim);color:var(--accent);border-radius:3px;padding:0 2px">$1</mark>')
+        : item.title;
+
+      html += '<article class="rcard" style="animation:fadeUp .3s ease both">'
+            + '<div class="cicon ' + item.color + '">' + item.icon + '</div>'
+            + '<div>'
+            + '<div class="ccat">' + item.section + '</div>'
+            + '<h3 class="ctitle">' + title + '</h3>'
+            + '</div>'
+            + '<p class="cdesc">' + item.desc + '</p>'
+            + '<div class="clinks">';
+
+      item.links.forEach(function(link) {
+        if (link.url) {
+          html += '<a class="clink" href="' + link.url + '" target="_blank" rel="noopener">'
+               + link.label + '<span class="clink-arr">→</span></a>';
+        } else if (link.action) {
+          html += '<button class="clink" onclick="' + link.action + ';return false;" '
+               + 'style="background:none;border:none;width:100%;text-align:left;font-family:var(--font-body);cursor:pointer">'
+               + link.label + '<span class="clink-arr">→</span></button>';
+        }
+      });
+
+      html += '</div></article>';
+    });
+  });
+
+  resultsGrid.innerHTML = html;
+}
+
+/* ── Wire up events ─────────────────────────────────────────── */
+searchInput.addEventListener('input', runSearch);
+
+filterBar.querySelectorAll('.filter-pill').forEach(function(pill) {
+  pill.addEventListener('click', function() {
+    filterBar.querySelectorAll('.filter-pill').forEach(function(p) { p.classList.remove('active'); });
+    this.classList.add('active');
+    runSearch();
+  });
+});
+
+function clearSearch() {
+  searchInput.value = '';
+  filterBar.querySelectorAll('.filter-pill').forEach(function(p) { p.classList.remove('active'); });
+  filterBar.querySelector('[data-filter="all"]').classList.add('active');
+  resultsGrid.innerHTML = '';
+  emptyState.classList.remove('vis');
+  matchCount.textContent = '0';
+  if (searchHint) searchHint.style.display = '';
+  searchClear.classList.remove('vis');
+  searchInput.focus();
+}
+
+// Also wire the home nav card to focus the search input
+var resNavCard = document.querySelector('.nav-card[onclick*="resources"]');
+if (resNavCard) {
+  resNavCard.addEventListener('click', function() {
+    setTimeout(function() { if (searchInput) searchInput.focus(); }, 100);
+  });
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PATTERN 5 — TOAST NOTIFICATION/* ══════════════════════════════════════════════════════════════
+   PATTERN 5 — TOAST NOTIFICATION
+   ══════════════════════════════════════════════════════════════
+   showToast(message, type)
+   types: 'success', 'info', 'warn', 'err'
+
+   How it works:
+   1. Set message text and icon
+   2. Add .show class → CSS transition slides it up
+   3. setTimeout removes .show after 2.8s → slides back down
+   4. We clear any existing timer so rapid calls don't stack
+
+   The icons map: a plain object as a lookup table.
+   This is more readable than a long if/else chain.
+*/
+var toast     = document.getElementById('toast');
+var toastIcon = document.getElementById('toast-icon');
+var toastMsg  = document.getElementById('toast-msg');
+var toastTimer;
+
+var TOAST_ICONS = { success: '✅', info: 'ℹ️', warn: '⚠️', err: '❌' };
+
+function showToast(message, type) {
+  type = type || 'info';
+
+  // Clear any existing timer
+  clearTimeout(toastTimer);
+
+  // Set content
+  toastIcon.textContent = TOAST_ICONS[type] || 'ℹ️';
+  toastMsg.textContent  = message;
+  toastMsg.className    = 'toast-msg ' + type;
+
+  // Show
+  toast.classList.add('show');
+
+  // Auto-dismiss after 2.8s
+  toastTimer = setTimeout(function() {
+    toast.classList.remove('show');
+  }, 2800);
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   PATTERN 6 — COPY TO CLIPBOARD
+   ══════════════════════════════════════════════════════════════
+   navigator.clipboard.writeText() is the modern async API.
+   We walk up the DOM from the button to find the <pre> element,
+   then copy its text content.
+
+   Visual feedback:
+   - Change button text to "Copied ✓"
+   - Add .copied class for green colour
+   - Reset after 2s
+*/
+function copyCode(btn) {
+  // Walk up from button to find the code-wrap parent, then get pre
+  var pre = btn.closest('.code-wrap').querySelector('pre');
+  if (!pre) return;
+
+  // Copy text (strips HTML tags like <span class="ck">)
+  navigator.clipboard.writeText(pre.textContent).then(function() {
+    btn.textContent = '✓ Copied';
+    btn.classList.add('copied');
+    showToast('Code copied to clipboard!', 'success');
+
+    setTimeout(function() {
+      btn.textContent = '📋 Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(function() {
+    showToast('Copy failed — please select manually', 'err');
+  });
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   NAVBAR UTILITIES
+══════════════════════════════════════════════════════════════ */
+var navbar    = document.getElementById('navbar');
+var hamburger = document.getElementById('hamburger');
+var mobileMenu = document.getElementById('mobile-menu');
+var progBar   = document.getElementById('scroll-progress');
+var themeBtn  = document.getElementById('theme-toggle');
+var htmlEl    = document.documentElement;
+
+// Scroll effects: navbar shadow + progress bar
+window.addEventListener('scroll', function() {
+  var scrollY = window.scrollY;
+  navbar.classList.toggle('scrolled', scrollY > 10);
+
+  var total = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  progBar.style.width = (total > 0 ? (scrollY / total) * 100 : 0) + '%';
+});
+
+// Hamburger toggle
+hamburger.addEventListener('click', function() {
+  var isOpen = mobileMenu.classList.toggle('open');
+  navbar.classList.toggle('menu-open', isOpen);
+  hamburger.setAttribute('aria-expanded', isOpen);
+  mobileMenu.setAttribute('aria-hidden', !isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+});
+
+function closeMobileMenu() {
+  mobileMenu.classList.remove('open');
+  navbar.classList.remove('menu-open');
+  hamburger.setAttribute('aria-expanded', 'false');
+  mobileMenu.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#mobile-menu') && !e.target.closest('#hamburger')) {
+    closeMobileMenu();
+  }
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeMobileMenu();
+});
+
+// Theme toggle (with localStorage)
+var savedTheme = localStorage.getItem('db-hub-theme') || 'dark';
+applyTheme(savedTheme);
+
+function applyTheme(theme) {
+  htmlEl.setAttribute('data-theme', theme);
+  var isDark = theme === 'dark';
+  themeBtn.textContent = isDark ? '🌙' : '☀️';
+  themeBtn.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+  localStorage.setItem('db-hub-theme', theme);
+}
+
+themeBtn.addEventListener('click', function() {
+  applyTheme(htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+});
+
+/*
+  ══════════════════════════════════════════════════════════════
+  WHAT YOU LEARNED IN BLOCK 3
+  ══════════════════════════════════════════════════════════════
+
+  PATTERN 1 — SPA Navigation
+    nav(pageId) hides all .page divs and shows target.
+    window.location.hash → URL updates without page reload.
+    popstate event → back/forward buttons work correctly.
+    All nav wired from data-page attribute, not hardcoded.
+
+  PATTERN 2 — Tabs with sliding ink bar
+    tab-btn.active controls highlight.
+    tab-panel.active controls visibility.
+    Ink bar position set from btn.offsetLeft + btn.offsetWidth.
+    CSS transition:left + transition:width does the slide.
+
+  PATTERN 3 — Accordion (max-height trick)
+    .open .acc-body { max-height: 900px } triggers expansion.
+    overflow:hidden clips during animation.
+    .open .acc-chevron { transform: rotate(180deg) } flips arrow.
+    One-open-at-a-time: close all siblings before opening clicked.
+
+  PATTERN 4 — Live search + category filter
+    filterCards() runs on every input event and every pill click.
+    Checks data-category AND searches data-tags + visible text.
+    Result count updates live. Empty state shows when count = 0.
+    clearSearch() resets both input and filter simultaneously.
+
+  PATTERN 5 — Toast notification
+    Object literal as icon lookup (cleaner than if/else chain).
+    clearTimeout prevents stacking on rapid successive calls.
+    CSS transform:translateY for off-screen→on-screen animation.
+
+  PATTERN 6 — Copy to clipboard
+    navigator.clipboard.writeText() is the modern async API.
+    .closest() walks up the DOM to find the right container.
+    pre.textContent strips HTML tags, giving clean plain text.
+
+  BLOCK 4 PREVIEW:
+    JSON data files (cards rendered from a JS array, not HTML)
+    dynamic card rendering with .map() and innerHTML
+    localStorage bookmarks / saved resources
+    URL query string state (?page=resources&filter=opensource)
+  ══════════════════════════════════════════════════════════════
+*/
+
+</script>
+</body>
+</html>
